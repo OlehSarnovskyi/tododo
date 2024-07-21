@@ -1,7 +1,8 @@
 import './App.css';
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import Calendar from "./components/Calendar";
+import Calendar from "./components/Calendar/Calendar";
+import TodoList from "./components/TodoList/TodoList";
 
 function App({children}) {
     function getTodoList(date) {
@@ -11,7 +12,10 @@ function App({children}) {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             {children}
-            <Calendar getTodoList={getTodoList}/>
+            <div className="App">
+                <Calendar getTodoList={getTodoList}/>
+                <TodoList/>
+            </div>
         </LocalizationProvider>
     )
 }
