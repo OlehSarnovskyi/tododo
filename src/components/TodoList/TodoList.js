@@ -1,4 +1,5 @@
 import './TodoList.css';
+import CreateNewGroup from "./components/CreateNewGroup";
 
 // from localStorage
 const list = [
@@ -26,7 +27,7 @@ const list = [
 function TodoList() {
     return (
         <div className="TodoList">
-            TodoList
+            <CreateNewGroup/>
         </div>
     )
 }
