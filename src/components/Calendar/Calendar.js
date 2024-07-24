@@ -10,7 +10,7 @@ function Calendar({getTodoList}) {
                 <StaticDatePicker
                     onChange={(date) => getTodoList(dayjs(date).format("DD.MM.YYYY"))}
                     slotProps={{
-                        actionBar: {actions: ['clear']},
+                        actionBar: {actions: ['today', 'clear']},
                     }}
                 />
             </div>
