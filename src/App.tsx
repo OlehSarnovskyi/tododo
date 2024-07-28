@@ -3,7 +3,7 @@ import Calendar from "./components/Calendar/Calendar";
 import TodoList from "./components/TodoList/TodoList";
 
 function App() {
-    function getTodoList(date) {
+    function getTodoList(date: string): void {
         console.log('api call get by date', date)
     }
 
@@ -15,4 +15,4 @@ function App() {
     )
 }
 
-export default App;
+export default App

@@ -4,11 +4,11 @@ import {useState} from "react";
 function CreateNewGroup() {
     const [isAddingNewGroup, setIsAddingNewGroup] = useState(false)
 
-    function startAddingNewGroup() {
+    function startAddingNewGroup(): void {
         setIsAddingNewGroup(true)
     }
 
-    function addNewGroup(e) {
+    function addNewGroup(e: KeyboardEvent): void {
         if (e.key === 'Enter' || e.key === 'Escape') {
             setIsAddingNewGroup(false)
             // list.push({
@@ -24,7 +24,7 @@ function CreateNewGroup() {
             {!isAddingNewGroup ? (
                 <Button variant="outlined" onClick={startAddingNewGroup}>+ New group</Button>
             ) : (
-                <TextField id="outlined-basic" label="New group" variant="outlined" onKeyDown={addNewGroup} />
+                <TextField id="outlined-basic" label="New group" variant="outlined" onKeyDown={() => addNewGroup} />
             )}
         </>
     )
