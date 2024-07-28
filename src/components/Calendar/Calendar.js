@@ -6,7 +6,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 function Calendar({getTodoList}) {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <div className="Calendar">
+            <div className="calendar">
                 <StaticDatePicker
                     onChange={(date) => getTodoList(dayjs(date).format("DD.MM.YYYY"))}
                     slotProps={{

@@ -8,7 +8,7 @@ function App() {
     }
 
     return (
-        <div className="App">
+        <div className="app">
             <Calendar getTodoList={getTodoList}/>
             <TodoList/>
         </div>

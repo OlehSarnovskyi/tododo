@@ -26,7 +26,7 @@ const list = [
 
 function TodoList() {
     return (
-        <div className="TodoList">
+        <div className="todo-list">
             <CreateNewGroup/>
         </div>
     )
