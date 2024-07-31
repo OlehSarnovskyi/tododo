@@ -1,9 +1,9 @@
 import './TodoList.css';
 import CreateNewGroup from "./components/CreateNewGroup";
+import Group from "./components/Group/Group";
 
-// from localStorage
-const list = [
-    {
+function TodoList() {
+    const list = [{
         id: 'groupId',
         name: 'groupName',
         status: 'done',
@@ -21,13 +21,14 @@ const list = [
                 ]
             }
         ]
-    }
-]
+    }].map(group =>
+        <Group key={group.id} group={group}/>
+    )
 
-function TodoList() {
     return (
         <div className="todo-list">
             <CreateNewGroup/>
+            {list}
         </div>
     )
 }
