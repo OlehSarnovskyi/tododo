@@ -1,6 +1,7 @@
 import Task from "./components/Task";
 import CreateNew from "../CreateNew";
 import {useState} from "react";
+import {generateID} from "../../services/helper.service";
 
 function Group({group}) {
     const [isAddingNewTask, setIsAddingNewTask] = useState(false)
@@ -12,7 +13,7 @@ function Group({group}) {
     function addNewTask(text: string): void {
         let list = JSON.parse(localStorage.getItem('tododoList')) || []
         let g = list.find(g => group.id === g.id)
-        g.tasks.push({id: 'taskID', text, subtasks: []})
+        g.tasks.push({id: generateID(), text, subtasks: []})
         localStorage.setItem('tododoList', JSON.stringify(list))
     }
 
