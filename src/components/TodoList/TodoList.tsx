@@ -19,6 +19,12 @@ function TodoList() {
                         status: 'done',
                     }
                 ]
+            },
+            {
+                id: 'taskId2',
+                text: 'taskText 2',
+                status: 'done',
+                subtasks: []
             }
         ]
     }].map(group =>
