@@ -3,6 +3,7 @@ import CreateNew from "./components/CreateNew";
 import Group from "./components/Group/Group";
 import {useState} from "react";
 import {generateID} from "./services/helper.service";
+import {getTododoList} from "./services/local-storage.service";
 
 // [{
 //     id: 'groupId',
@@ -33,12 +34,10 @@ import {generateID} from "./services/helper.service";
 function TodoList() {
     const [isAddingNewGroup, setIsAddingNewGroup] = useState(false)
 
-    const list = (JSON.parse(localStorage.getItem('tododoList')) || []).map(group => // TODO: create seperate functions to get and set form LS
-        <Group key={group.id} group={group}/>
-    )
+    const groups = getTododoList().map(group => <Group key={group.id} group={group}/>)
 
     function addNewGroup(name: string): void {
-        let list = JSON.parse(localStorage.getItem('tododoList')) || [] // TODO: create interface
+        let list = getTododoList() // TODO: create interface
         list.push({id: generateID(), name, tasks: []})
         localStorage.setItem('tododoList', JSON.stringify(list))
     }
@@ -51,7 +50,7 @@ function TodoList() {
                 isAddingNew={isAddingNewGroup}
                 addNew={addNewGroup}
             />
-            {list}
+            {groups}
         </div>
     )
 }
