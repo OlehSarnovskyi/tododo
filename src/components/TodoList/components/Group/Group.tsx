@@ -3,6 +3,8 @@ import CreateNew from "../CreateNew";
 import {useState} from "react";
 import {generateID} from "../../services/helper.service";
 import {getTododoList} from "../../services/local-storage.service";
+import {List} from "../../models/list";
+import StatusEnum = List.StatusEnum;
 
 function Group({group}) {
     const [isAddingNewTask, setIsAddingNewTask] = useState(false)
@@ -14,7 +16,7 @@ function Group({group}) {
     function addNewTask(text: string): void {
         let list = getTododoList()
         let g = list.find(g => group.id === g.id)
-        g.tasks.push({id: generateID(), text, subtasks: []})
+        g?.tasks.push({id: generateID(), text, status: StatusEnum.ACTIVE})
         localStorage.setItem('tododoList', JSON.stringify(list))
     }
 
