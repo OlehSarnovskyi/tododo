@@ -9,14 +9,9 @@ function CreateNew({instance, setIsAddingNew, isAddingNew, addNew}) {
     function addNewByEnter(e: React.KeyboardEvent<HTMLDivElement>): void {
         if (e.key === 'Enter' || e.key === 'Escape') {
             setIsAddingNew(false)
-            // list.push({
-            //     id: 'id2', // TODO: generate ID
-            //     name: 'name2',
-            //     tasks: []
-            // }) // TODO: do it with props and internal func
         }
         if (e.key === 'Enter') {
-            // addNew()
+            addNew((e.nativeEvent.target as any).value)
         }
     }
 
