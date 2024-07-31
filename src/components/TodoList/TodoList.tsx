@@ -1,8 +1,11 @@
 import './TodoList.css';
-import CreateNewGroup from "./components/CreateNewGroup";
+import CreateNew from "./components/CreateNew";
 import Group from "./components/Group/Group";
+import {useState} from "react";
 
 function TodoList() {
+    const [isAddingNewGroup, setIsAddingNewGroup] = useState(false)
+
     const list = [{
         id: 'groupId',
         name: 'groupName',
@@ -33,7 +36,11 @@ function TodoList() {
 
     return (
         <div className="todo-list">
-            <CreateNewGroup/>
+            <CreateNew
+                instance="Group"
+                setIsAddingNew={setIsAddingNewGroup}
+                isAddingNew={isAddingNewGroup}
+            />
             {list}
         </div>
     )
