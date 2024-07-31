@@ -36,7 +36,7 @@ function TodoList() {
         <Group key={group.id} group={group}/>
     )
 
-    function addNewGroup(name): void {
+    function addNewGroup(name: string): void {
         let list = JSON.parse(localStorage.getItem('tododoList')) || [] // TODO: create interface
         list.push({id: 'groupId', name, tasks: []}) // TODO: generate ID
         localStorage.setItem('tododoList', JSON.stringify(list))

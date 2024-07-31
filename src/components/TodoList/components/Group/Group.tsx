@@ -9,6 +9,13 @@ function Group({group}) {
         <Task key={task.id} task={task}/>
     )
 
+    function addNewTask(text: string): void {
+        let list = JSON.parse(localStorage.getItem('tododoList')) || []
+        let g = list.find(g => group.id === g.id)
+        g.tasks.push({id: 'taskID', text, subtasks: []})
+        localStorage.setItem('tododoList', JSON.stringify(list))
+    }
+
     return <>
         <h3>
             {group.name}
@@ -17,6 +24,7 @@ function Group({group}) {
             instance="Task"
             setIsAddingNew={setIsAddingNewTask}
             isAddingNew={isAddingNewTask}
+            addNew={addNewTask}
         />
         {tasks}
     </>
