@@ -3,7 +3,7 @@ import CreateNew from "../CreateNew";
 import {useState} from "react";
 import {generateID} from "../../services/helper.service";
 import {getTododoList} from "../../services/local-storage.service";
-import {List} from "../../models/list";
+import {List} from "../../../../models/list";
 import StatusEnum = List.StatusEnum;
 
 function Group({group}) {
