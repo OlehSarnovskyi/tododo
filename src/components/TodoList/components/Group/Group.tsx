@@ -10,7 +10,7 @@ function Group({group}) {
     const [isAddingNewTask, setIsAddingNewTask] = useState(false)
 
     const tasks = group.tasks.map(task =>
-        <Task key={task.id} task={task}/>
+        <Task key={task.id} task={task} groupId={group.id}/>
     )
 
     function addNewTask(text: string): void {
@@ -20,8 +20,14 @@ function Group({group}) {
         localStorage.setItem('tododoList', JSON.stringify(list))
     }
 
+    function deleteGroup(): void {
+        let list = getTododoList()
+        list = list.filter(g => g.id !== group.id)
+        localStorage.setItem('tododoList', JSON.stringify(list))
+    }
+
     return <>
-        <h3>{group.name}</h3>
+        <h3>{group.name} <button onClick={deleteGroup}>X</button></h3>
         <CreateNew
             instance="Task"
             setIsAddingNew={setIsAddingNewTask}
