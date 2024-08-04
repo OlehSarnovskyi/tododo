@@ -29,6 +29,25 @@ let LIST: List.Item[] = [
     }
 ]
 
-export function getTododoList(): List.Group[] {
-    return JSON.parse(localStorage.getItem('tododoList')) || []
+export function getTododoList(): List.Item[] {
+    return LIST
+}
+
+export function updateTododoList(date: string, groups: List.Group[] = []): void {
+    let list = [...LIST]
+    let listByDate = list?.find(list => list.date === date) || {date, groups: []}
+    // set new groups by date
+    listByDate = {
+        ...listByDate,
+        groups
+    }
+    // remove previous
+    list.filter(list => list.date !== date)
+    // add updated
+    list = [
+        ...list,
+        listByDate
+    ]
+    // set
+    LIST = list
 }

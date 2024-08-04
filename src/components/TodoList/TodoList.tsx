@@ -3,17 +3,16 @@ import CreateNew from "./components/CreateNew";
 import Group from "./components/Group/Group";
 import {useState} from "react";
 import {generateID} from "./services/helper.service";
-import {getTododoList} from "./services/local-storage.service";
+import {updateTododoList} from "../../services/local-storage.service";
 
-function TodoList() {
+function TodoList({date, list}) {
     const [isAddingNewGroup, setIsAddingNewGroup] = useState(false)
 
-    const groups = getTododoList().map(group => <Group key={group.id} group={group}/>)
+    let groupsTemplates = list?.groups?.map(group => <Group key={group.id} group={group}/>)
 
     function addNewGroup(name: string): void {
-        let list = getTododoList()
-        list.push({id: generateID(), name, tasks: []})
-        localStorage.setItem('tododoList', JSON.stringify(list))
+        list?.groups?.push({id: generateID(), name, tasks: []})
+        updateTododoList(date, list?.groups)
     }
 
     return (
@@ -24,7 +23,7 @@ function TodoList() {
                 isAddingNew={isAddingNewGroup}
                 addNew={addNewGroup}
             />
-            {groups}
+            {groupsTemplates}
         </div>
     )
 }
