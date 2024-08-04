@@ -2,7 +2,7 @@ import {ID} from "../components/TodoList/models/id"
 
 export namespace List {
     export interface Item {
-        date: Date
+        date: string
         groups: Group[]
     }
 
