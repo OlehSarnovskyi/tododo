@@ -1,7 +1,7 @@
 import './App.css';
 import Calendar from "./components/Calendar/Calendar";
 import TodoList from "./components/TodoList/TodoList";
-import {getTododoList} from "./services/local-storage.service";
+import {getList} from "./services/local-storage.service";
 import {useState} from "react";
 import dayjs from "dayjs";
 
@@ -11,7 +11,7 @@ function App() {
 
     function getTodoList(date: string): void {
         // TODO: help with initial call
-        setListByDate(getTododoList().find(list => list.date === date)!)
+        setListByDate(getList().find(list => list.date === date)!)
     }
 
     return (

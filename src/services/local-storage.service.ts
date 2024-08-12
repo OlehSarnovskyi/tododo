@@ -2,7 +2,7 @@ import {List} from "../models/list";
 
 let LIST: List.Item[] = [
     {
-        date: '04.08.2024',
+        date: '12.08.2024',
         groups: [
             {
                 id: 'asd',
@@ -12,7 +12,7 @@ let LIST: List.Item[] = [
         ]
     },
     {
-        date: '05.08.2024',
+        date: '13.08.2024',
         groups: [
             {
                 id: 'asd123',
@@ -29,7 +29,8 @@ let LIST: List.Item[] = [
     }
 ]
 
-export function getTododoList(): List.Item[] {
+export function getList(): List.Item[] {
+    console.log('getList');
     return LIST
 }
 
