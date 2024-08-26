@@ -5,10 +5,10 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
 function Calendar({date, getTodoList}) {
     return (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs as PickerValidDate}>
             <div className="calendar">
                 <StaticDatePicker
-                    defaultValue={dayjs(new Date(dayjs(date).format('DD.MM.YYYY'))) as PickerValidDate}
+                    defaultValue={dayjs(date) as PickerValidDate}
                     onChange={(date) => getTodoList(dayjs(date).format("DD.MM.YYYY"))}
                     slotProps={{
                         actionBar: {actions: ['today', 'clear']},

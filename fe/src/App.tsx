@@ -6,7 +6,7 @@ import {useState} from "react";
 import dayjs from "dayjs";
 
 function App() {
-    const [date, setDate] = useState(dayjs().format('DD.MM.YYYY'))
+    const [date, setDate] = useState(dayjs())
     const [listByDate, setListByDate] = useState({})
 
     function getTodoList(date: string): void {
