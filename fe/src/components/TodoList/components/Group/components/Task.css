@@ -1,0 +1,6 @@
+.task {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /*TODO: ellipsis*/
+}

@@ -7,7 +7,13 @@ let LIST: List.Item[] = [
             {
                 id: 'asd',
                 name: 'g1',
-                tasks: []
+                tasks: [
+                    {
+                        id: 'asdasdasdasdasd',
+                        text: 'too long task string task stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask string',
+                        status: List.StatusEnum.ACTIVE
+                    }
+                ]
             }
         ]
     },
