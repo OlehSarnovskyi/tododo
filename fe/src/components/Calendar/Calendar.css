@@ -1,4 +1,4 @@
 .calendar {
-    width: 40%;
-    margin-right: 100px;
+    width: fit-content;
+    margin-bottom: 20px;
 }

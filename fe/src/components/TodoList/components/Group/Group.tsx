@@ -33,6 +33,7 @@ function Group({group}) {
             addNew={addNewTask}
         />
         {tasks}
+        <hr/>
     </>
 }
 

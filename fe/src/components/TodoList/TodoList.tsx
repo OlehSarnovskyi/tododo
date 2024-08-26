@@ -1,4 +1,3 @@
-import './TodoList.css';
 import CreateNew from "./components/CreateNew";
 import Group from "./components/Group/Group";
 import {useState} from "react";
@@ -16,13 +15,14 @@ function TodoList({date, list}) {
     }
 
     return (
-        <div className="todo-list">
+        <div>
             <CreateNew
                 instance="Group"
                 setIsAddingNew={setIsAddingNewGroup}
                 isAddingNew={isAddingNewGroup}
                 addNew={addNewGroup}
             />
+            <hr/>
             {groupsTemplates}
         </div>
     )
