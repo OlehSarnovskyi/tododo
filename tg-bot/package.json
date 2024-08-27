@@ -4,7 +4,7 @@
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js",
-    "build": "cp bot.js ./dist/bot.js"
+    "build": "mkdir dist && cp bot.js ./dist/bot.js"
   },
   "keywords": [],
   "author": "",
