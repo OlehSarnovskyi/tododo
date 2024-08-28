@@ -10,5 +10,9 @@ bot.on('message', msg => {
 
     if (text === '/launch') {
         bot.sendMessage(chatId, 'Hello, world!')
+    } else {
+        msg.reply.text(msg.text)
     }
-});
+})
+
+export default bot

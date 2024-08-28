@@ -1,17 +1,21 @@
 {
   "name": "tg-bot",
   "version": "1.0.0",
-  "main": "bot.js",
   "scripts": {
-    "start": "node bot.js",
-    "build": "mkdir dist && cp bot.js ./dist/bot.js"
+    "start": "node src/bot.mjs",
+    "build": "mkdir dist && cp src/bot.mjs ./dist/bot.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Oleh Sarnovskyi",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "node-telegram-bot-api": "^0.66.0"
+    "node-telegram-bot-api": "^0.66.0",
+    "telebot": "^1.4.1",
+    "telebot-vercel": "^1.0.1"
+  },
+  "engines": {
+    "node": "^18.0.0"
   }
 }
