@@ -4,14 +4,13 @@
   "license": "MIT",
   "scripts": {
     "dev": "vc dev",
-    "start": "node src/bot.mjs"
+    "dev-with-tunnel": "npm run tunnel & npm run dev",
+    "tunnel": "cloudflared tunnel --url http://localhost:3000"
   },
   "keywords": [],
   "author": "Oleh Sarnovskyi",
   "description": "",
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "node-telegram-bot-api": "^0.66.0",
     "telebot": "^1.4.1",
     "telebot-vercel": "^1.0.1"
   },
