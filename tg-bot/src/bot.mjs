@@ -14,6 +14,11 @@ bot.on('/start', msg => {
     return msg.reply.text(welcomeMsg)
 })
 
+bot.keyboard([
+    bot.button('go!'),
+    bot.inlineButton('inline')
+])
+
 // TODO: support different languages (Your language code is ${msg.from.language_code})
 
 
