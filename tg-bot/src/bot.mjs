@@ -14,10 +14,47 @@ bot.on('/start', msg => {
     return msg.reply.text(welcomeMsg)
 })
 
-bot.keyboard([
-    bot.button('go!'),
-    bot.inlineButton('inline')
-])
+bot.callbackQuery(callbackQuery => {
+    const action = callbackQuery.data;
+    const msg = callbackQuery.message;
+    const opts = {
+        chat_id: msg.chat.id,
+        message_id: msg.message_id,
+    };
+    let text;
+
+    if (action === '1') {
+        text = 'You hit button 1';
+    }
+
+})
+
+bot.sendMessage('Click', {
+    reply_markup: {
+        inline_keyboard: [
+            [
+                {
+                    text: "Yes",
+                    callback_data: "btn_yes"
+                },
+                {
+                    text: "No",
+                    callback_data: "btn_no"
+                },
+
+            ]
+        ],
+        keyboard: [
+            [
+                {
+                    text: "keyboard!!!!",
+                    callback_data: "123yes"
+                },
+            ]
+        ]
+    }
+})
+
 
 // TODO: support different languages (Your language code is ${msg.from.language_code})
 
