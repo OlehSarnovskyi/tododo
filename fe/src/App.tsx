@@ -20,9 +20,10 @@ function App() {
 
     return (
         <div className="app">
-            {Telegram.WebApp.initDataUnsafe.user.name}
-            <br/>
-            {Telegram.WebApp.initDataUnsafe.user.id}
+            Your name is {Telegram.WebApp.initDataUnsafe.user.first_name}
+            <hr/>
+            Your user.id is {Telegram.WebApp.initDataUnsafe.user.id}
+            <hr/>
             <div>
                 <Calendar date={date} setDate={setDate}/>
                 <TodoList date={date} list={listByDate}/>
