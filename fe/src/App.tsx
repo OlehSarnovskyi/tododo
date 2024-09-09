@@ -19,6 +19,7 @@ function App() {
 
     return (
         <div className="app">
+            {JSON.stringify(Telegram)}
             <div>
                 <Calendar date={date} setDate={setDate}/>
                 <TodoList date={date} list={listByDate}/>
