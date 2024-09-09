@@ -1,0 +1,11 @@
+# dependencies
+/fe/node_modules
+
+/be/node_modules
+/be/dist
+/be/build
+/be/.env
+
+/tg-bot/node_modules
+tg-bot/.vercel
+tg-bot/.env
