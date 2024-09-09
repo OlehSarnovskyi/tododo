@@ -10,7 +10,7 @@ function App() {
     const [listByDate, setListByDate] = useState({})
 
     useEffect(() => {
-        console.log(Telegram, Telegram?.initDataUnsafe?.user?.id);
+        console.log(Telegram.WebApp.initDataUnsafe);
         getTodoList(dayjs(date).format('DD.MM.YYYY'))
     }, [date])
 
@@ -20,7 +20,9 @@ function App() {
 
     return (
         <div className="app">
-            {Telegram?.initDataUnsafe?.user?.id}
+            {Telegram.WebApp.initDataUnsafe.user.name}
+            <br/>
+            {Telegram.WebApp.initDataUnsafe.user.id}
             <div>
                 <Calendar date={date} setDate={setDate}/>
                 <TodoList date={date} list={listByDate}/>
