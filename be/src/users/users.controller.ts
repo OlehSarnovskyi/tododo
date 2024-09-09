@@ -1,7 +1,4 @@
-import {Body, Controller, Get, Post} from '@nestjs/common'
-
-
-import {CreateUserDto} from './dto/create-user.dto'
+import {Controller, Get} from '@nestjs/common'
 import {UsersService} from './users.service'
 
 @Controller('users')
@@ -9,13 +6,9 @@ export class UsersController {
 
   constructor(private readonly userService: UsersService) {}
 
-  @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    // return this.userService.create(createUserDto)
-  }
-
-  @Get()
-  async findAll() {
-    // return this.userService.findAll()
+  @Get('create')
+  async createUser(username: string) {
+    const userData = await this.userService.create({username});
+    // ... збереження користувача в базі даних \
   }
 }
