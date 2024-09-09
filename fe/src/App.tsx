@@ -16,10 +16,21 @@ function App() {
     function getTodoList(date: string): void {
         setListByDate(getList().find(list => list.date === date)!)
     }
+    let data;
+    const getBotUpdates = () =>
+        fetch(
+            `https://api.telegram.org/bot${process.env.BOT_ACCESS_TOKEN}/id`
+        ).then((response) => {
+            data = response.json()
+        });
+
+    useEffect(() => {
+        getBotUpdates()
+    }, [null]);
 
     return (
         <div className="app">
-            {JSON.stringify(Telegram)}
+            {data}
             <div>
                 <Calendar date={date} setDate={setDate}/>
                 <TodoList date={date} list={listByDate}/>
