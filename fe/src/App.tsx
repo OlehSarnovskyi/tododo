@@ -10,28 +10,17 @@ function App() {
     const [listByDate, setListByDate] = useState({})
 
     useEffect(() => {
-        console.log(Telegram);
+        console.log(Telegram.initDataUnsafe.user.id);
         getTodoList(dayjs(date).format('DD.MM.YYYY'))
     }, [date])
 
     function getTodoList(date: string): void {
         setListByDate(getList().find(list => list.date === date)!)
     }
-    let data;
-    const getBotUpdates = () =>
-        fetch(
-            `https://api.telegram.org/bot${process.env.BOT_ACCESS_TOKEN}/id`
-        ).then((response) => {
-            data = response.json()
-        });
-
-    useEffect(() => {
-        getBotUpdates()
-    }, [null]);
 
     return (
         <div className="app">
-            {data}
+            {Telegram.initDataUnsafe.user.id}
             <div>
                 <Calendar date={date} setDate={setDate}/>
                 <TodoList date={date} list={listByDate}/>
