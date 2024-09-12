@@ -9,8 +9,24 @@ function App() {
     const [date, setDate] = useState(dayjs())
     const [listByDate, setListByDate] = useState({})
 
+    function login() {
+        fetch('http://localhost:3000/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: Telegram.WebApp.initDataUnsafe.user.id
+            }),
+        })
+            .then((res) => res.json())
+    }
+
     useEffect(() => {
-        console.log(Telegram.WebApp.initDataUnsafe);
+        login()
+    }, null)
+    
+    useEffect(() => {
         getTodoList(dayjs(date).format('DD.MM.YYYY'))
     }, [date])
 
