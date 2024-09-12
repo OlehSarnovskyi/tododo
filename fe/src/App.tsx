@@ -24,7 +24,7 @@ function App() {
 
     useEffect(() => {
         login()
-    }, null)
+    }, [])
     
     useEffect(() => {
         getTodoList(dayjs(date).format('DD.MM.YYYY'))
