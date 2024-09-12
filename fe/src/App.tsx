@@ -11,7 +11,7 @@ function App() {
 
     function login() {
         console.log('login');
-        fetch('http://localhost:3000/users/login', {
+        fetch('http://localhost:3000/users/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
