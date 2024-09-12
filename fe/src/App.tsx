@@ -10,6 +10,7 @@ function App() {
     const [listByDate, setListByDate] = useState({})
 
     function login() {
+        console.log('login');
         fetch('http://localhost:3000/users/login', {
             method: 'POST',
             headers: {
@@ -18,8 +19,7 @@ function App() {
             body: JSON.stringify({
                 id: Telegram.WebApp.initDataUnsafe.user.id
             }),
-        })
-            .then((res) => res.json())
+        }).then((res) => console.log(res.json()))
     }
 
     useEffect(() => {
