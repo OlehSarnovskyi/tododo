@@ -13,6 +13,7 @@ function App() {
         console.log('login');
         fetch('http://localhost:3000/users/login/', {
             method: 'POST',
+            mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
             },
