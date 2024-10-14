@@ -11,7 +11,7 @@ function App() {
 
     function login() {
         console.log('login');
-        fetch('http://localhost:3000/users/login/', {
+        fetch('https://c789-85-216-179-112.ngrok-free.app/users/login/', {
             method: 'POST',
             mode: 'cors',
             headers: {
