@@ -8,6 +8,7 @@ function Calendar({date, setDate}) {
         <LocalizationProvider dateAdapter={AdapterDayjs as PickerValidDate}>
             <div className="calendar">
                 <MobileDatePicker
+                    closeOnSelect
                     defaultValue={dayjs(date) as PickerValidDate}
                     onChange={(date) => setDate(date)}
                     slotProps={{
