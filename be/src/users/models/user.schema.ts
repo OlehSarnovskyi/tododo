@@ -5,7 +5,7 @@ import { DateDocument } from '../modules/dates/models/date.schema'
 @Schema({versionKey: false})
 export class UserDocument extends AbstractDocument {
   @Prop({required: true})
-  userId: string
+  id: number
 
   @Prop({type: [{type: DateDocument}]})
   dates?: string[]

@@ -1,16 +1,29 @@
-import {Injectable} from '@nestjs/common'
+import {Injectable, UnprocessableEntityException} from '@nestjs/common'
 
 import {UsersRepository} from './users.repository'
-import { CreateUserDto } from './dto/create-user.dto'
+import {CreateUserDto} from './dto/create-user.dto'
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+    constructor(private readonly usersRepository: UsersRepository) {
+    }
 
-  async create(createUserDto: CreateUserDto) {
-  }
+    async login(userDto: CreateUserDto) {
+        const exists = await this.validateLogin(userDto.id)
+        if (!exists) {
+            await this.usersRepository.create(userDto)
+        }
+    }
 
-  // findOne() {
-  //   return this.usersRepository.find(query, ranges)
-  // }
+    private async validateLogin(id: number) {
+        try {
+            await this.usersRepository.findOne(id)
+            return true
+        } catch (error) {
+            if (error.status && error.status !== 404) {
+                throw new UnprocessableEntityException('')
+            }
+        }
+        return false
+    }
 }

@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common'
+import {Injectable, NotFoundException} from '@nestjs/common'
 import {Model, Types} from 'mongoose'
 import {UserDocument} from './models/user.schema'
 import { InjectModel } from '@nestjs/mongoose'
@@ -16,11 +16,12 @@ export class UsersRepository {
     return (await createdDocument.save()).toJSON()
   }
 
-  // async findOne(date: string): Promise<UserDocument> {
-    // const document = await this.model.findOne({date}, {}, {lean: true})
+  async findOne(id: number): Promise<UserDocument> {
+    const document = await this.model.findOne({id}, {}, {lean: true})
 
-    // if (!document) {
-    // }
-    // return document
-  // }
+    if (!document) {
+      throw new NotFoundException()
+    }
+    return document
+  }
 }
