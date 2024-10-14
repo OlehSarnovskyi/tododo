@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 
 function App() {
     const [date, setDate] = useState(dayjs())
-    const [listByDate, setListByDate] = useState({})
+    const [listByDate, setListByDate] = useState({tasks: []})
 
     function login() {
         fetch('https://c789-85-216-179-112.ngrok-free.app/users/login/', {
@@ -19,7 +19,7 @@ function App() {
             body: JSON.stringify({
                 id: Telegram.WebApp.initDataUnsafe.user.id
             }),
-        }).then((res) => {
+        }).then(() => {
             // show tooltip
         })
     }

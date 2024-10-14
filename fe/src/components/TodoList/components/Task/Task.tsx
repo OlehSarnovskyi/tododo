@@ -1,6 +1,6 @@
 import './Task.css'
 
-function Task({task, groupId}) {
+function Task({task}) {
 
     function deleteTask(): void {}
 

@@ -3,12 +3,6 @@ import {ID} from "../components/TodoList/models/id"
 export namespace List {
     export interface Item {
         date: string
-        groups: Group[]
-    }
-
-    export interface Group {
-        id: ID
-        name: string
         tasks: Task[]
     }
 
