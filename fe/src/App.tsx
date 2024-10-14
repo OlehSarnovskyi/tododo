@@ -10,7 +10,6 @@ function App() {
     const [listByDate, setListByDate] = useState({})
 
     function login() {
-        console.log('login');
         fetch('https://c789-85-216-179-112.ngrok-free.app/users/login/', {
             method: 'POST',
             mode: 'cors',
@@ -20,7 +19,9 @@ function App() {
             body: JSON.stringify({
                 id: Telegram.WebApp.initDataUnsafe.user.id
             }),
-        }).then((res) => console.log(res.json()))
+        }).then((res) => {
+            // show tooltip
+        })
     }
 
     useEffect(() => {
@@ -38,8 +39,6 @@ function App() {
     return (
         <div className="app">
             Your name is {Telegram.WebApp.initDataUnsafe.user.first_name}
-            <hr/>
-            Your user.id is {Telegram.WebApp.initDataUnsafe.user.id}
             <hr/>
             <div>
                 <Calendar date={date} setDate={setDate}/>
