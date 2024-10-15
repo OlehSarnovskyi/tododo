@@ -2,7 +2,7 @@ import {Button, TextField} from "@mui/material";
 
 function CreateNew({instance, setIsAddingNew, isAddingNew, addNew}) {
 
-    function startAddingNewGroup(): void {
+    function startAddingNewInstance(): void {
         setIsAddingNew(true)
     }
 
@@ -18,7 +18,7 @@ function CreateNew({instance, setIsAddingNew, isAddingNew, addNew}) {
     return (
         <>
             {!isAddingNew ? (
-                <Button variant="outlined" onClick={startAddingNewGroup}>+ New {instance}</Button>
+                <Button variant="outlined" onClick={startAddingNewInstance}>+ New {instance}</Button>
             ) : (
                 <TextField id="outlined-basic" label={"New" + instance} variant="outlined" onKeyDown={(e) => addNewByEnter(e)} />
             )}

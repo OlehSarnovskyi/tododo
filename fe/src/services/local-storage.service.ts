@@ -30,7 +30,7 @@ export function getList(): List.Item[] {
 export function updateTododoList(date: string, tasks: List.Item[] = []): void {
     let list = [...LIST]
     let listByDate = list?.find(list => list.date === date) || {date, tasks: []}
-    // set new groups by date
+    // set new tasks by date
     listByDate = {
         ...listByDate,
         tasks
