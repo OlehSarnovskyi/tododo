@@ -2,20 +2,20 @@ import {List} from "../models/list";
 
 let LIST: List.Item[] = [
     {
-        date: '14.10.2024',
+        date: '16.10.2024',
         tasks: [
             {
-                id: 'asdasdasdasdasd',
+                _id: 'asdasdasdasdasd',
                 text: 'too long task string task stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask stringtask string',
                 status: List.StatusEnum.ACTIVE
             }
         ]
     },
     {
-        date: '14.10.2024',
+        date: '16.10.2024',
         tasks: [
             {
-                id: 'asdasdasdasdasd',
+                _id: 'asdasdasdasdasd',
                 text: 'task string',
                 status: List.StatusEnum.ACTIVE
             }

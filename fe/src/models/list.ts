@@ -7,7 +7,7 @@ export namespace List {
     }
 
     export interface Task {
-        id: ID
+        _id: ID
         text: string
         status: StatusEnum
     }

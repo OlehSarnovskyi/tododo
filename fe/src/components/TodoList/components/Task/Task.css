@@ -1,6 +1,10 @@
 .task {
     overflow-x: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
+    text-overflow: ellipsis;
     /*TODO: ellipsis*/
+}
+
+.task__item-icon {
+    min-width: auto !important;
 }
