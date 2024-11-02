@@ -17,7 +17,7 @@ function App() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: Telegram.WebApp.initDataUnsafe.user.id
+                id: Telegram.WebApp.initDataUnsafe.user?.id
             }),
         }).then(() => {
             // show tooltip
@@ -25,7 +25,9 @@ function App() {
     }
 
     useEffect(() => {
-        login()
+        if (Telegram.WebApp.initDataUnsafe.user) {
+            login()
+        }
     }, [])
     
     useEffect(() => {
@@ -36,14 +38,19 @@ function App() {
         setListByDate(getList().find(list => list.date === date)!)
     }
 
+    let tgPlatform = false
+    if (Telegram.WebApp.initDataUnsafe.user) {
+        tgPlatform = true
+    }
+
     return (
         <div className="app">
-            Your name is {Telegram.WebApp.initDataUnsafe.user.first_name}
-            <hr/>
-            <div className="app__container">
+            {tgPlatform
+            ? <div className="app__container">
                 <Calendar date={date} setDate={setDate}/>
                 <TodoList date={date} list={listByDate}/>
             </div>
+            : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
         </div>
     )
 }
