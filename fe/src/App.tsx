@@ -40,7 +40,7 @@ function App() {
         <div className="app">
             Your name is {Telegram.WebApp.initDataUnsafe.user.first_name}
             <hr/>
-            <div>
+            <div className="app__container">
                 <Calendar date={date} setDate={setDate}/>
                 <TodoList date={date} list={listByDate}/>
             </div>

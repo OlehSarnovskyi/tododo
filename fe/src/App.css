@@ -4,3 +4,8 @@
     align-items: center;
     margin: 20px;
 }
+
+.app__container {
+    min-width: 200px;
+    max-width: 200px;
+}

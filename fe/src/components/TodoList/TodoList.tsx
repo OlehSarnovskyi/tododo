@@ -1,4 +1,3 @@
-import './TodoList.css';
 import CreateNew from "./components/CreateNew";
 import Task from './components/Task/Task';
 import {useState} from "react";
