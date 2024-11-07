@@ -1,12 +1,19 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose'
 import { AbstractDocument } from 'src/shared/abstract.schema'
+import {StatusEnum} from "./status.enum";
 
 @Schema({versionKey: false})
 export class TaskDocument extends AbstractDocument {
   @Prop({ required: true })
-  text: string
+  userId: number
 
   @Prop({ required: true })
+  date: string
+
+  @Prop({ required: true })
+  text: string
+
+  @Prop({ required: true, default: StatusEnum.ACTIVE })
   status: boolean
 }
 

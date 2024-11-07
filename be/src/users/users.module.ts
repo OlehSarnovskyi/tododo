@@ -4,7 +4,7 @@ import {UsersService} from "./users.service";
 import {UsersRepository} from "./users.repository";
 import { UserDocument, UserSchema } from './models/user.schema';
 import { DatabaseModule } from '../shared/database.module';
-import {TasksModule} from "./modules/dates/modules/tasks/tasks.module";
+import {TasksModule} from "./modules/tasks/tasks.module";
 
 @Module({
   imports: [
