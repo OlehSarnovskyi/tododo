@@ -1,5 +1,5 @@
-import {Injectable} from '@nestjs/common'
-import {Model, Types} from 'mongoose'
+import {Injectable, NotFoundException} from '@nestjs/common'
+import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose'
 import {InjectModel} from '@nestjs/mongoose'
 import {TaskDocument} from "./models/task.schema";
 
@@ -23,9 +23,20 @@ export class TasksRepository {
     return (await createdDocument.save()).toJSON()
   }
 
-  // delete
+  async findOneAndUpdate<TDocument>(filterQuery: FilterQuery<TDocument>, update: UpdateQuery<TDocument>): Promise<TDocument> {
+    const document = await this.model.findOneAndUpdate(filterQuery, update, {
+      lean: true,
+      new: true
+    })
 
-  // edit
+    if (!document) {
+      throw new NotFoundException('Document not found.')
+    }
+
+    return document as TDocument
+  }
+
+  // delete
 
   // mask as done/active
 }

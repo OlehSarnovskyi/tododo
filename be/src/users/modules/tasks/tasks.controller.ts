@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {Body, Controller, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TasksService } from './tasks.service';
 import { TaskDocument } from './models/task.schema';
+import {UpdateTaskDto} from "./dto/update-task.dto";
 
 @Controller('tasks')
 export class TasksController {
@@ -19,9 +20,12 @@ export class TasksController {
     await this.tasksService.create(taskDto);
   }
 
-  // delete
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+    this.tasksService.update(id, updateTaskDto)
+  }
 
-  // edit
+  // delete
 
   // mask as done/active
 }

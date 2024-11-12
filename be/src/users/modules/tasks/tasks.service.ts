@@ -3,6 +3,7 @@ import {Injectable} from '@nestjs/common'
 import {TasksRepository} from "./tasks.repository";
 import {CreateTaskDto} from "./dto/create-task.dto";
 import {TaskDocument} from "./models/task.schema";
+import {UpdateTaskDto} from "./dto/update-task.dto";
 
 @Injectable()
 export class TasksService {
@@ -14,5 +15,9 @@ export class TasksService {
 
     async create(createTaskDto: CreateTaskDto) {
         return await this.tasksRepository.create(createTaskDto)
+    }
+
+    update(_id: string, updatePostDto: UpdateTaskDto) {
+        return this.tasksRepository.findOneAndUpdate({_id}, {$set: updatePostDto})
     }
 }
