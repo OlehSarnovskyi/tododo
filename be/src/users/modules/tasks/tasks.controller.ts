@@ -30,5 +30,8 @@ export class TasksController {
     this.tasksService.remove(id)
   }
 
-  // mask as done/active
+  @Patch('markAs/:id')
+  async markAs(@Param('id') id: string) {
+    this.tasksService.markAs(id)
+  }
 }

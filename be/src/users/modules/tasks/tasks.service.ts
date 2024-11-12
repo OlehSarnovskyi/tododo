@@ -24,4 +24,8 @@ export class TasksService {
     remove(_id: string) {
         return this.tasksRepository.findOneAndDelete({_id})
     }
+
+    markAs(_id: string) {
+        this.tasksRepository.findOneAndMarkAs({_id})
+    }
 }

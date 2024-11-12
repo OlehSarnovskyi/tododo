@@ -40,5 +40,19 @@ export class TasksRepository {
     return this.model.findOneAndDelete(filterQuery, {lean: true}) as unknown as TDocument
   }
 
-  // mask as done/active
+  async findOneAndMarkAs<TDocument>(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
+    const document = await this.model.findOneAndUpdate(filterQuery,
+      [{ $set: { status: { $eq: [false, '$status'] } } }],
+      {
+        lean: true,
+        new: true
+      }
+    );
+
+    if (!document) {
+      throw new NotFoundException('Document not found.')
+    }
+
+    return document as TDocument
+  }
 }
