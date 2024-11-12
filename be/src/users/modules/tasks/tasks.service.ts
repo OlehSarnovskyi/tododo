@@ -20,4 +20,8 @@ export class TasksService {
     update(_id: string, updatePostDto: UpdateTaskDto) {
         return this.tasksRepository.findOneAndUpdate({_id}, {$set: updatePostDto})
     }
+
+    remove(_id: string) {
+        return this.tasksRepository.findOneAndDelete({_id})
+    }
 }

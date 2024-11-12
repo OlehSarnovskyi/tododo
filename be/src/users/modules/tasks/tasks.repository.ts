@@ -36,7 +36,9 @@ export class TasksRepository {
     return document as TDocument
   }
 
-  // delete
+  async findOneAndDelete<TDocument>(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
+    return this.model.findOneAndDelete(filterQuery, {lean: true}) as unknown as TDocument
+  }
 
   // mask as done/active
 }
