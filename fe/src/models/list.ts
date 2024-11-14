@@ -1,11 +1,6 @@
 import {ID} from "../components/TodoList/models/id"
 
 export namespace List {
-    export interface Item {
-        date: string
-        tasks: Task[]
-    }
-
     export interface Task {
         _id: ID
         text: string

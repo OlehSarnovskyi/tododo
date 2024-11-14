@@ -1,20 +1,14 @@
 import CreateNew from "./components/CreateNew";
 import Task from './components/Task/Task';
 import {useState} from "react";
-import {generateID} from "./services/helper.service";
-import {updateTododoList} from "../../services/local-storage.service";
-import {List as L} from '../../models/list';
 import {List} from "@mui/material";
 
-function TodoList({date, list}) {
+function TodoList({date, tasks}) {
     const [isAddingNewTask, setIsAddingNewTask] = useState(false)
 
-    let tasksTemplates = list?.tasks?.map(task => <Task key={task.id} task={task}/>)
+    let tasksTemplates = tasks?.map(task => <Task key={task._id} task={task}/>)
 
-    function addNewTask(text: string): void {
-        list?.tasks?.push({_id: generateID(), text, status: L.StatusEnum.ACTIVE})
-        updateTododoList(date, list?.tasks)
-    }
+    function addNewTask(text: string): void {}
 
     return (
         <div className="todo-list">
