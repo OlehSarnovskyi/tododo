@@ -34,7 +34,10 @@ function App() {
             {tgPlatform
             ? <div className="app__container">
                 <Calendar date={date} setDate={setDate}/>
-                <TodoList date={date} tasks={tasksByUserIdAndDate}/>
+                <TodoList
+                    date={dayjs(date).format('DD.MM.YYYY')}
+                    tasks={tasksByUserIdAndDate}
+                    setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>
             </div>
             : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
         </div>
