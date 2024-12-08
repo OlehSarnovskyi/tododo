@@ -11,25 +11,36 @@ import {
 } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {useState} from "react";
+import {deleteTask, getTasksByUserIdAndDate} from "../../../../services/tasks.service";
 
-const options = [
+const OPTIONS = [
     'Edit',
     'Delete'
 ];
 
 const ITEM_HEIGHT = 48;
 
-function Task({task}) {
+function Task({task, date, setTasksByUserIdAndDate}) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const open = Boolean(!!anchorEl)
-    const handleClick = (event: MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget)
-    };
-    const handleClose = () => {
-        setAnchorEl(null)
+    const handleClick = (event: MouseEvent) => {
+        setAnchorEl((event as any).currentTarget)
     };
 
-    function deleteTask(): void {}
+    function handleClose(option: 'Edit' | 'Delete'): void {
+        if (option === 'Delete') {
+            deleteT()
+        }
+        setAnchorEl(null)
+    }
+
+    function deleteT(): void {
+        deleteTask(task._id).then(() => {
+            getTasksByUserIdAndDate(date).then(tasks => {
+                setTasksByUserIdAndDate(tasks)
+            })
+        })
+    }
 
     return (
         <ListItem
@@ -61,8 +72,8 @@ function Task({task}) {
                             },
                         }}
                     >
-                        {options.map((option) => (
-                            <MenuItem key={option} onClick={handleClose}>
+                        {OPTIONS.map((option) => (
+                            <MenuItem key={option} onClick={() => handleClose(option)}>
                                 {option}
                             </MenuItem>
                         ))}
@@ -80,7 +91,7 @@ function Task({task}) {
                 </ListItemIcon>
                 <ListItemText
                     className="task"
-                    primary={`Line item ${task.text}`}
+                    primary={task.text}
                 />
             </ListItemButton>
         </ListItem>

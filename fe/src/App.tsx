@@ -43,5 +43,8 @@ function App() {
         </div>
     )
 }
+window.Telegram.WebApp.initDataUnsafe.user = {
+    id: 668875944
+}
 
 export default App

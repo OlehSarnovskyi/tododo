@@ -6,8 +6,8 @@ import {addNewTask, getTasksByUserIdAndDate} from "../../services/tasks.service"
 
 function TodoList({date, tasks, setTasksByUserIdAndDate}) {
     const [isAddingNewTask, setIsAddingNewTask] = useState(false)
-
-    let tasksTemplates = tasks?.map(task => <Task key={task._id} task={task}/>)
+    // TODO: need to refactor
+    let tasksTemplates = tasks?.map(task => <Task key={task._id} task={task} date={date} setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>)
 
     function addTask(text: string): void {
         addNewTask({date, text}).then(() => {

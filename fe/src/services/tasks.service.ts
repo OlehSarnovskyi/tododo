@@ -1,4 +1,5 @@
 import {List} from "../models/list";
+import {ID} from "../components/TodoList/models/id";
 
 export function getTasksByUserIdAndDate(date: string): Promise<any> {
     const queryParams = new URLSearchParams({
@@ -26,5 +27,12 @@ export function addNewTask(task: Pick<List.Task, 'text' & 'date'>): Promise<Resp
             'Content-Type': 'application/json',
         },
         body
+    })
+}
+
+export function deleteTask(taskId: ID): Promise<Response> {
+    return fetch(`http://localhost:3001/tasks/${taskId}`, {
+        method: 'DELETE',
+        mode: 'cors'
     })
 }
