@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "dist/main.js",
+      "src": "dist",
       "use": "@vercel/node"
     }
   ],
@@ -22,6 +22,5 @@
         "TRACE"
       ]
     }
-  ],
-  "outputDirectory": "dist"
+  ]
 }
