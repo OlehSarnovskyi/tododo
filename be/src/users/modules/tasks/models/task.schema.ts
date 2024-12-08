@@ -1,7 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose'
-import { AbstractDocument } from 'src/shared/abstract.schema'
+import {AbstractDocument} from "shared/abstract.schema";
 import {StatusEnum} from "./status.enum";
-
 @Schema({versionKey: false})
 export class TaskDocument extends AbstractDocument {
   @Prop({ required: true })
