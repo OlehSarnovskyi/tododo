@@ -1,5 +1,5 @@
-export function login() {
-    fetch('http://localhost:3001/users/login/', {
+export function login(): Promise<string> {
+    return fetch('http://localhost:3001/users/login/', {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -8,7 +8,5 @@ export function login() {
         body: JSON.stringify({
             id: Telegram.WebApp.initDataUnsafe.user?.id
         }),
-    }).then(() => {
-        // show tooltip
-    })
+    }).then(res => res.text())
 }

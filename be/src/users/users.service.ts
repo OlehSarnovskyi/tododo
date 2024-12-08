@@ -8,11 +8,12 @@ export class UsersService {
     constructor(private readonly usersRepository: UsersRepository) {
     }
 
-    async login(userDto: CreateUserDto) {
+    async login(userDto: CreateUserDto): Promise<string> {
         const exists = await this.validateLogin(userDto.id)
         if (!exists) {
-            await this.usersRepository.create(userDto)
+            return await this.usersRepository.create(userDto)
         }
+        return await 'Logged in'
     }
 
     private async validateLogin(id: number) {

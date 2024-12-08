@@ -7,13 +7,14 @@ import { InjectModel } from '@nestjs/mongoose'
 export class UsersRepository {
   constructor(@InjectModel(UserDocument.name) private model: Model<UserDocument>) {}
 
-  async create(document: Omit<UserDocument, '_id' | 'createdAt'>): Promise<UserDocument> {
+  async create(document: Omit<UserDocument, '_id' | 'createdAt'>): Promise<string> {
     const createdDocument = new this.model({
       ...document,
       _id: new Types.ObjectId(),
       createdAt: Date.now()
-    })
-    return (await createdDocument.save()).toJSON()
+    });
+    (await createdDocument.save()).toJSON()
+    return await 'Accout created and logged in'
   }
 
   async findOne(id: number): Promise<UserDocument> {
