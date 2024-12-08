@@ -75,6 +75,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
         ? <TextField variant="outlined" defaultValue={task.text} onKeyDown={(e) => editByEnter(e)} />
         : <ListItem
             key={task._id}
+            onClick={markAs}
             secondaryAction={
                 <IconButton aria-label="more"
                             id="long-button"
@@ -118,7 +119,6 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                         edge="start"
                         disableRipple
                         checked={task.status}
-                        onClick={markAs}
                     />
                 </ListItemIcon>
                 <ListItemText
