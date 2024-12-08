@@ -8,10 +8,11 @@ import {
     ListItemText,
     Menu,
     MenuItem,
+    TextField,
 } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {useState} from "react";
-import {deleteTask, getTasksByUserIdAndDate} from "../../../../services/tasks.service";
+import {deleteTask, editTask, getTasksByUserIdAndDate} from "../../../../services/tasks.service";
 
 const OPTIONS = [
     'Edit',
@@ -22,6 +23,7 @@ const ITEM_HEIGHT = 48;
 
 function Task({task, date, setTasksByUserIdAndDate}) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+    const [isEditMode, setEditMode] = useState<boolean>(false)
     const open = Boolean(!!anchorEl)
     const handleClick = (event: MouseEvent) => {
         setAnchorEl((event as any).currentTarget)
@@ -30,6 +32,8 @@ function Task({task, date, setTasksByUserIdAndDate}) {
     function handleClose(option: 'Edit' | 'Delete'): void {
         if (option === 'Delete') {
             deleteT()
+        } else if (option === 'Edit') {
+            setEditMode(true)
         }
         setAnchorEl(null)
     }
@@ -42,8 +46,24 @@ function Task({task, date, setTasksByUserIdAndDate}) {
         })
     }
 
+    function editByEnter(e: React.KeyboardEvent<HTMLDivElement>): void {
+        if (e.key === 'Enter' || e.key === 'Escape') {
+            setEditMode(false)
+            setAnchorEl(null)
+        }
+        if (e.key === 'Enter') {
+            editTask({_id: task._id, text: (e.target as any).value}).then(() => {
+                getTasksByUserIdAndDate(date).then(tasks => {
+                    setTasksByUserIdAndDate(tasks)
+                })
+            })
+        }
+    }
+
     return (
-        <ListItem
+        isEditMode
+        ? <TextField variant="outlined" defaultValue={task.text} onKeyDown={(e) => editByEnter(e)} />
+        : <ListItem
             key={task._id}
             secondaryAction={
                 <IconButton aria-label="more"

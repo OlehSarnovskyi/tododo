@@ -36,3 +36,17 @@ export function deleteTask(taskId: ID): Promise<Response> {
         mode: 'cors'
     })
 }
+
+export function editTask(task: Pick<List.Task, '_id' | 'text'>): Promise<Response> {
+    const body = JSON.stringify({
+        text: task.text
+    });
+    return fetch(`http://localhost:3001/tasks/${task._id}`, {
+        method: 'PATCH',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body
+    })
+}
