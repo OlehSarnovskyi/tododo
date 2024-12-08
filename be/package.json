@@ -75,6 +75,7 @@
     "testEnvironment": "node"
   },
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "src/**/*"
   ]
 }
