@@ -66,7 +66,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                 getTasksByUserIdAndDate(date).then(tasks => {
                     setTasksByUserIdAndDate(tasks)
                 })
-            }, 200)
+            })
         })
     }
 
