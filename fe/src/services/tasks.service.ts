@@ -6,7 +6,7 @@ export function getTasksByUserIdAndDate(date: string): Promise<any> {
         userId: Telegram.WebApp.initDataUnsafe.user?.id,
         date
     }).toString()
-    return fetch(`http://localhost:3001/tasks?${queryParams}`, {
+    return fetch(`https://tododo-be.vercel.app/tasks?${queryParams}`, {
         method: 'GET',
         mode: 'cors',
         headers: {
@@ -20,7 +20,7 @@ export function addNewTask(task: Pick<List.Task, 'text' & 'date'>): Promise<Resp
         ...task,
         userId: Telegram.WebApp.initDataUnsafe.user?.id
     });
-    return fetch(`http://localhost:3001/tasks/add`, {
+    return fetch(`https://tododo-be.vercel.app/tasks/add`, {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -31,7 +31,7 @@ export function addNewTask(task: Pick<List.Task, 'text' & 'date'>): Promise<Resp
 }
 
 export function deleteTask(taskId: ID): Promise<Response> {
-    return fetch(`http://localhost:3001/tasks/${taskId}`, {
+    return fetch(`https://tododo-be.vercel.app/tasks/${taskId}`, {
         method: 'DELETE',
         mode: 'cors'
     })
@@ -41,7 +41,7 @@ export function editTask(task: Pick<List.Task, '_id' | 'text'>): Promise<Respons
     const body = JSON.stringify({
         text: task.text
     });
-    return fetch(`http://localhost:3001/tasks/${task._id}`, {
+    return fetch(`https://tododo-be.vercel.app/tasks/${task._id}`, {
         method: 'PATCH',
         mode: 'cors',
         headers: {
@@ -52,7 +52,7 @@ export function editTask(task: Pick<List.Task, '_id' | 'text'>): Promise<Respons
 }
 
 export function markAsTask(taskId: ID): Promise<Response> {
-    return fetch(`http://localhost:3001/tasks/markAs/${taskId}`, {
+    return fetch(`https://tododo-be.vercel.app/tasks/markAs/${taskId}`, {
         method: 'PATCH',
         mode: 'cors'
     })
