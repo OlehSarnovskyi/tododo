@@ -5,12 +5,7 @@ export namespace List {
         _id: ID
         userId: number
         text: string
-        status: StatusEnum
+        status: boolean
         date: string
-    }
-
-    export enum StatusEnum {
-        ACTIVE,
-        DONE
     }
 }

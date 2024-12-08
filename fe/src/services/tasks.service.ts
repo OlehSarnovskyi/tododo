@@ -50,3 +50,10 @@ export function editTask(task: Pick<List.Task, '_id' | 'text'>): Promise<Respons
         body
     })
 }
+
+export function markAsTask(taskId: ID): Promise<Response> {
+    return fetch(`http://localhost:3001/tasks/markAs/${taskId}`, {
+        method: 'PATCH',
+        mode: 'cors'
+    })
+}

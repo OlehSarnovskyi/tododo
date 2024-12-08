@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {useState} from "react";
-import {deleteTask, editTask, getTasksByUserIdAndDate} from "../../../../services/tasks.service";
+import {deleteTask, editTask, getTasksByUserIdAndDate, markAsTask} from "../../../../services/tasks.service";
 
 const OPTIONS = [
     'Edit',
@@ -58,6 +58,16 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                 })
             })
         }
+    }
+
+    function markAs(): void {
+        markAsTask(task._id).then(() => {
+            setTimeout(() => {
+                getTasksByUserIdAndDate(date).then(tasks => {
+                    setTasksByUserIdAndDate(tasks)
+                })
+            }, 200)
+        })
     }
 
     return (
@@ -107,6 +117,8 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                     <Checkbox
                         edge="start"
                         disableRipple
+                        checked={task.status}
+                        onClick={markAs}
                     />
                 </ListItemIcon>
                 <ListItemText
