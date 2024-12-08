@@ -24,17 +24,22 @@ const ITEM_HEIGHT = 48;
 function Task({task, date, setTasksByUserIdAndDate}) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const [isEditMode, setEditMode] = useState<boolean>(false)
-    const open = Boolean(!!anchorEl)
+    const open = Boolean(anchorEl!)
     const handleClick = (event: MouseEvent) => {
         setAnchorEl((event as any).currentTarget)
     };
 
     function handleClose(option: 'Edit' | 'Delete'): void {
+        setAnchorEl(null)
         if (option === 'Delete') {
             deleteT()
         } else if (option === 'Edit') {
             setEditMode(true)
         }
+    }
+
+    function closeMenu(e: Event) {
+        e.stopPropagation()
         setAnchorEl(null)
     }
 
@@ -75,7 +80,6 @@ function Task({task, date, setTasksByUserIdAndDate}) {
         ? <TextField variant="outlined" defaultValue={task.text} onKeyDown={(e) => editByEnter(e)} />
         : <ListItem
             key={task._id}
-            onClick={markAs}
             secondaryAction={
                 <IconButton aria-label="more"
                             id="long-button"
@@ -93,12 +97,20 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                         }}
                         anchorEl={anchorEl}
                         open={open}
-                        onClose={handleClose}
+                        onClose={closeMenu}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
                         slotProps={{
                             paper: {
                                 style: {
                                     maxHeight: ITEM_HEIGHT * 4.5,
-                                    width: '20ch',
+                                    width: '10ch',
                                 },
                             },
                         }}
@@ -124,6 +136,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                 <ListItemText
                     className="task"
                     primary={task.text}
+                    onClick={markAs}
                 />
             </ListItemButton>
         </ListItem>
