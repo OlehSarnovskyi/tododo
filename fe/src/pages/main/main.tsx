@@ -4,13 +4,15 @@ import {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import {login} from "../../services/login.service";
 import {getTasksByUserIdAndDate} from "../../services/tasks.service";
-import {Link} from "react-router-dom";
+import Link from '@mui/material/Link';
 import {Snackbar} from "@mui/material";
 import {useApiWithSnackbar} from "../../services/api.service";
+import {useNavigate} from "react-router-dom";
 
 
 function Main() {
     const api = useApiWithSnackbar()
+    const navigate = useNavigate()
     const [date, setDate] = useState(dayjs())
     const [tasksByUserIdAndDate, setTasksByUserIdAndDate] = useState([])
     const [snackbar, setSnackbar] = useState({
@@ -51,7 +53,7 @@ function Main() {
                             tasks={tasksByUserIdAndDate}
                             setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>
                     </div>
-                    <Link className="link-terms" to="terms-of-service-and-privacy-policy">Terms of service and privacy policy</Link>
+                    <Link className="link-terms" onClick={() => navigate('terms-of-service-and-privacy-policy')}>Terms of service and privacy policy</Link>
                   </div>
                 : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
             <Snackbar
