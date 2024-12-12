@@ -71,7 +71,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                 getTasksByUserIdAndDate(date).then(tasks => {
                     setTasksByUserIdAndDate(tasks)
                 })
-            })
+            }, 200)
         })
     }
 
@@ -131,12 +131,12 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                         edge="start"
                         disableRipple
                         checked={task.status}
+                        onClick={markAs}
                     />
                 </ListItemIcon>
                 <ListItemText
                     className="task"
                     primary={task.text}
-                    onClick={markAs}
                 />
             </ListItemButton>
         </ListItem>
