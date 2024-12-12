@@ -18,7 +18,7 @@ function CreateNew({instance, setIsAddingNew, isAddingNew, addNew}) {
     return (
         <>
             {!isAddingNew ? (
-                <Button variant="outlined" onClick={startAddingNewInstance}>+ New {instance}</Button>
+                <Button sx={{width: '100%'}} variant="outlined" onClick={startAddingNewInstance}>+ New {instance}</Button>
             ) : (
                 <TextField id="outlined-basic" label={"New" + instance} variant="outlined" onKeyDown={(e) => addNewByEnter(e)} />
             )}

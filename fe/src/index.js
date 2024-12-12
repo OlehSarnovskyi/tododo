@@ -5,16 +5,27 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 import {SnackbarProvider} from "./services/snackbar.service";
+import {createTheme, ThemeProvider} from "@mui/material";
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#212121'
+        }
+    }
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-      <BrowserRouter>
-          <SnackbarProvider>
-              <App/>
-          </SnackbarProvider>
-      </BrowserRouter>
-  </React.StrictMode>
+    <React.StrictMode>
+        <ThemeProvider theme={theme}>
+            <BrowserRouter>
+                <SnackbarProvider>
+                    <App/>
+                </SnackbarProvider>
+            </BrowserRouter>
+        </ThemeProvider>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
