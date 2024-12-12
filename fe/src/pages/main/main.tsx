@@ -6,9 +6,11 @@ import {login} from "../../services/login.service";
 import {getTasksByUserIdAndDate} from "../../services/tasks.service";
 import {Link} from "react-router-dom";
 import {Snackbar} from "@mui/material";
+import {useApiWithSnackbar} from "../../services/api.service";
 
 
 function Main() {
+    const api = useApiWithSnackbar()
     const [date, setDate] = useState(dayjs())
     const [tasksByUserIdAndDate, setTasksByUserIdAndDate] = useState([])
     const [snackbar, setSnackbar] = useState({
@@ -17,7 +19,7 @@ function Main() {
 
     useEffect(() => {
         if (Telegram.WebApp.initDataUnsafe.user) {
-            login().then((message) => {
+            login(api).then((message) => {
                 setSnackbar({
                     open: true,
                     message
@@ -28,7 +30,7 @@ function Main() {
 
     useEffect(() => {
         const formattedDate = dayjs(date).format('DD.MM.YYYY')
-        getTasksByUserIdAndDate(formattedDate).then(tasks => {
+        getTasksByUserIdAndDate(api)(formattedDate).then(tasks => {
             setTasksByUserIdAndDate(tasks)
         })
     }, [date])

@@ -3,15 +3,17 @@ import Task from './components/Task/Task';
 import {useState} from "react";
 import {List} from "@mui/material";
 import {addNewTask, getTasksByUserIdAndDate} from "../../services/tasks.service";
+import {useApiWithSnackbar} from "../../services/api.service";
 
 function TodoList({date, tasks, setTasksByUserIdAndDate}) {
+    const api = useApiWithSnackbar()
     const [isAddingNewTask, setIsAddingNewTask] = useState(false)
     // TODO: need to refactor
     let tasksTemplates = tasks?.map(task => <Task key={task._id} task={task} date={date} setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>)
 
     function addTask(text: string): void {
-        addNewTask({date, text}).then(() => {
-            getTasksByUserIdAndDate(date).then(tasks => {
+        addNewTask(api)({date, text}).then(() => {
+            getTasksByUserIdAndDate(api)(date).then(tasks => {
                 setTasksByUserIdAndDate(tasks)
             })
         })

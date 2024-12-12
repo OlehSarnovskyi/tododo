@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {useSnackbar} from "./snackbar.service";
 
 // Create an instance of Axios
 export const api = axios.create({
@@ -6,17 +7,24 @@ export const api = axios.create({
     // https://tododo-be.vercel.app; http://localhost:3001
 });
 
-// Response Interceptor
-api.interceptors.response.use(
-    (response) => response,
-    // Handle errors globally, e.g., show a snackbar
-    (error) => {
-        // Extract error message
-        const message = error.response?.data?.message || error?.message || 'Something went wrong';
+// Error handling interceptor
+export const useApiWithSnackbar = () => {
+    const showSnackbar = useSnackbar();
 
-        // Show Snackbar with error
-        // showSnackbar(message, 'error');
+    // Add response interceptor
+    api.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            // Extract error message
+            const message =
+                error.response?.data?.message || error.message || 'Something went wrong';
 
-        return Promise.reject(error);
-    }
-);
+            // Show Snackbar with error
+            showSnackbar(message, 'error');
+
+            return Promise.reject(error);
+        }
+    );
+
+    return api;
+};

@@ -13,6 +13,7 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {useState} from "react";
 import {deleteTask, editTask, getTasksByUserIdAndDate, markAsTask} from "../../../../services/tasks.service";
+import {useApiWithSnackbar} from "../../../../services/api.service";
 
 const OPTIONS = [
     'Edit',
@@ -22,6 +23,7 @@ const OPTIONS = [
 const ITEM_HEIGHT = 48;
 
 function Task({task, date, setTasksByUserIdAndDate}) {
+    const api = useApiWithSnackbar()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const [isEditMode, setEditMode] = useState<boolean>(false)
     const open = Boolean(anchorEl!)
@@ -44,8 +46,8 @@ function Task({task, date, setTasksByUserIdAndDate}) {
     }
 
     function deleteT(): void {
-        deleteTask(task._id).then(() => {
-            getTasksByUserIdAndDate(date).then(tasks => {
+        deleteTask(api)(task._id).then(() => {
+            getTasksByUserIdAndDate(api)(date).then(tasks => {
                 setTasksByUserIdAndDate(tasks)
             })
         })
@@ -57,8 +59,8 @@ function Task({task, date, setTasksByUserIdAndDate}) {
             setAnchorEl(null)
         }
         if (e.key === 'Enter') {
-            editTask({_id: task._id, text: (e.target as any).value}).then(() => {
-                getTasksByUserIdAndDate(date).then(tasks => {
+            editTask(api)({_id: task._id, text: (e.target as any).value}).then(() => {
+                getTasksByUserIdAndDate(api)(date).then(tasks => {
                     setTasksByUserIdAndDate(tasks)
                 })
             })
@@ -66,9 +68,9 @@ function Task({task, date, setTasksByUserIdAndDate}) {
     }
 
     function markAs(): void {
-        markAsTask(task._id).then(() => {
+        markAsTask(api)(task._id).then(() => {
             setTimeout(() => {
-                getTasksByUserIdAndDate(date).then(tasks => {
+                getTasksByUserIdAndDate(api)(date).then(tasks => {
                     setTasksByUserIdAndDate(tasks)
                 })
             }, 200)
