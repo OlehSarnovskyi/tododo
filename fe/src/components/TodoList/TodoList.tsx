@@ -26,9 +26,11 @@ function TodoList({date, tasks, setTasksByUserIdAndDate}) {
                 addNew={addTask}
             />
             <hr/>
-            <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+            {tasks.length
+            ? <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
                 {tasksTemplates}
-            </List>
+              </List>
+            : 'No tasks for today'}
         </div>
     )
 }
