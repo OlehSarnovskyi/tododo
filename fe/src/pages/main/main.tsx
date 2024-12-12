@@ -2,10 +2,8 @@ import Calendar from "../../components/Calendar/Calendar";
 import TodoList from "../../components/TodoList/TodoList";
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
-import {login} from "../../services/login.service";
 import {getTasksByUserIdAndDate} from "../../services/tasks.service";
 import Link from '@mui/material/Link';
-import {Snackbar} from "@mui/material";
 import {useApiWithSnackbar} from "../../services/api.service";
 import {useNavigate} from "react-router-dom";
 
@@ -15,21 +13,8 @@ function Main() {
     const navigate = useNavigate()
     const [date, setDate] = useState(dayjs())
     const [tasksByUserIdAndDate, setTasksByUserIdAndDate] = useState([])
-    const [snackbar, setSnackbar] = useState({
-        open: false
-    });
 
-    useEffect(() => {
-        if (Telegram.WebApp.initDataUnsafe.user) {
-            login(api).then((message) => {
-                setSnackbar({
-                    open: true,
-                    message
-                })
-            })
-        }
-    }, [])
-
+    // TODO: call in App
     useEffect(() => {
         const formattedDate = dayjs(date).format('DD.MM.YYYY')
         getTasksByUserIdAndDate(api)(formattedDate).then(tasks => {
@@ -43,7 +28,7 @@ function Main() {
     }
 
     return (
-        <div>
+        <>
             {tgPlatform
                 ? <div className="app__container">
                     <div>
@@ -56,13 +41,7 @@ function Main() {
                     <Link className="link-terms" onClick={() => navigate('terms-of-service-and-privacy-policy')}>Terms of service and privacy policy</Link>
                   </div>
                 : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
-            <Snackbar
-                open={snackbar.open}
-                message={snackbar.message}
-                onClose={() => setSnackbar({open: false, message: null})}
-                autoHideDuration={3000}
-            />
-        </div>
+        </>
     )
 }
 
