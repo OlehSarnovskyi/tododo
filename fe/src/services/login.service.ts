@@ -1,12 +1,5 @@
+import {api} from "./api.service";
+
 export function login(): Promise<string> {
-    return fetch('https://tododo-be.vercel.app/users/login', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: Telegram.WebApp.initDataUnsafe.user?.id
-        }),
-    }).then(res => res.text())
+    return api.post('users/login', {id: Telegram.WebApp.initDataUnsafe.user?.id}).then(res => res.data)
 }
