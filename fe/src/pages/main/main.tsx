@@ -44,20 +44,22 @@ function Main() {
         <div>
             {tgPlatform
                 ? <div className="app__container">
-                    <Calendar date={date} setDate={setDate}/>
-                    <TodoList
-                        date={dayjs(date).format('DD.MM.YYYY')}
-                        tasks={tasksByUserIdAndDate}
-                        setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>
-                    <Snackbar
-                        open={snackbar.open}
-                        message={snackbar.message}
-                        onClose={() => setSnackbar({open: false, message: null})}
-                        autoHideDuration={5000}
-                    />
-                    <Link to="terms-of-service-and-privacy-policy">Terms of service and privacy policy</Link>
-                </div>
+                    <div>
+                        <Calendar date={date} setDate={setDate}/>
+                        <TodoList
+                            date={dayjs(date).format('DD.MM.YYYY')}
+                            tasks={tasksByUserIdAndDate}
+                            setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>
+                    </div>
+                    <Link className="link-terms" to="terms-of-service-and-privacy-policy">Terms of service and privacy policy</Link>
+                  </div>
                 : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
+            <Snackbar
+                open={snackbar.open}
+                message={snackbar.message}
+                onClose={() => setSnackbar({open: false, message: null})}
+                autoHideDuration={3000}
+            />
         </div>
     )
 }
