@@ -1,3 +1,4 @@
+import "./todo-list.css";
 import CreateNew from "./components/CreateNew";
 import Task from './components/Task/Task';
 import {useState} from "react";
@@ -28,11 +29,13 @@ function TodoList({date, tasks, setTasksByUserIdAndDate}) {
                 addNew={addTask}
             />
             <hr/>
-            {tasks.length
-            ? <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
-                {tasksTemplates}
-              </List>
-            : 'No tasks for today'}
+            <div className="todo-list-tasks">
+                {tasks.length
+                    ? <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+                        {tasksTemplates}
+                    </List>
+                    : 'No tasks for today'}
+            </div>
         </div>
     )
 }
