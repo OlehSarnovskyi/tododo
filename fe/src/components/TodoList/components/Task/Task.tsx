@@ -79,7 +79,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
 
     return (
         isEditMode
-        ? <TextField variant="outlined" defaultValue={task.text} onKeyDown={(e) => editByEnter(e)} />
+        ? <TextField sx={{width: '100%'}} variant="outlined" defaultValue={task.text} onKeyDown={(e) => editByEnter(e)} />
         : <ListItem
             key={task._id}
             secondaryAction={
