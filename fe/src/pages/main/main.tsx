@@ -34,7 +34,7 @@ function Main() {
                     <div>
                         <Calendar date={date} setDate={setDate}/>
                         <TodoList
-                            date={dayjs(date).format('DD.MM.YYYY')}
+                            date={dayjs(date)}
                             tasks={tasksByUserIdAndDate}
                             setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>
                     </div>

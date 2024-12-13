@@ -1,3 +1,9 @@
 .todo-list-tasks .MuiList-root {
     background-color: transparent;
 }
+
+.todo-list-no-tasks {
+    text-align: center;
+    color: #212121;
+    margin-top: 40px;
+}

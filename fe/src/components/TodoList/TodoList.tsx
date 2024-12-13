@@ -5,6 +5,7 @@ import {useState} from "react";
 import {List} from "@mui/material";
 import {addNewTask, getTasksByUserIdAndDate} from "../../services/tasks.service";
 import {useApiWithSnackbar} from "../../services/api.service";
+import dayjs from "dayjs";
 
 function TodoList({date, tasks, setTasksByUserIdAndDate}) {
     const api = useApiWithSnackbar()
@@ -13,11 +14,15 @@ function TodoList({date, tasks, setTasksByUserIdAndDate}) {
     let tasksTemplates = tasks?.map(task => <Task key={task._id} task={task} date={date} setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>)
 
     function addTask(text: string): void {
-        addNewTask(api)({date, text}).then(() => {
-            getTasksByUserIdAndDate(api)(date).then(tasks => {
+        addNewTask(api)({date: date.format('DD.MM.YYYY'), text}).then(() => {
+            getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY')).then(tasks => {
                 setTasksByUserIdAndDate(tasks)
             })
         })
+    }
+    
+    function isToday(): boolean {
+        return dayjs(date).isSame(dayjs(), 'day');
     }
 
     return (
@@ -34,7 +39,7 @@ function TodoList({date, tasks, setTasksByUserIdAndDate}) {
                     ? <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
                         {tasksTemplates}
                     </List>
-                    : 'No tasks for today'}
+                    : <p className="todo-list-no-tasks">No tasks for {isToday() ? 'today' : 'this day'}</p>}
             </div>
         </div>
     )
