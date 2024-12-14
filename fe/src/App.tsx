@@ -36,7 +36,7 @@ function App() {
                 open={snackbar.open}
                 message={snackbar.message}
                 onClose={() => setSnackbar({open: false, message: null})}
-                autoHideDuration={3000}
+                autoHideDuration={1500}
             />
         </div>
     )

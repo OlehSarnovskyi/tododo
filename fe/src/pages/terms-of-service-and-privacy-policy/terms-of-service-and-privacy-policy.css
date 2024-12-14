@@ -1,0 +1,10 @@
+.terms {
+    min-width: 200px;
+    width: 60vw;
+    max-width: 600px;
+    color: #212121;
+}
+
+.terms hr {
+    margin: 40px 0;
+}

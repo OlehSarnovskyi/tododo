@@ -38,7 +38,7 @@ function Main() {
                             tasks={tasksByUserIdAndDate}
                             setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>
                     </div>
-                    <Link className="link-terms" onClick={() => navigate('terms-of-service-and-privacy-policy')}>Terms of service and privacy policy</Link>
+                    <Link className="link-terms" onClick={() => navigate('terms-of-service-and-privacy-policy')}>Terms of Service and Privacy Policy</Link>
                   </div>
                 : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
         </>
