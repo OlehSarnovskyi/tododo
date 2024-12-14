@@ -106,7 +106,7 @@ function Terms() {
             <ul>
                 <li>
                     You have the right to access, update, or delete your data. To exercise these rights, contact us at
-                    !![Insert Contact Information]!!.
+                    <a href="https://t.me/oleh_srn">@oleh_srn</a>.
                 </li>
                 <li>You can stop using TODODO at any time, which will cease further data collection.</li>
             </ul>
@@ -133,7 +133,7 @@ function Terms() {
                 If you have any questions or concerns about these Terms of Service or Privacy Policy, please contact us
                 at:
             </p>
-            <p><b>Email:</b> [Insert Email Address]</p>
+            <p><b>Admin:</b> <a href="https://t.me/oleh_srn">@oleh_srn</a></p>
 
             <i>Thank you for using TODODO!</i>
         </div>
