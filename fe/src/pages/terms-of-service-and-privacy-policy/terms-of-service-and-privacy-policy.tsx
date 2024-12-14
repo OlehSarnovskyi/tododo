@@ -105,8 +105,8 @@ function Terms() {
             <h4>6. Your Rights</h4>
             <ul>
                 <li>
-                    You have the right to access, update, or delete your data. To exercise these rights, contact us at
-                    <a href="https://t.me/oleh_srn">@oleh_srn</a>.
+                    You have the right to access, update, or delete your data. To exercise these rights, contact us
+                    at <a href="https://t.me/oleh_srn">@oleh_srn</a>.
                 </li>
                 <li>You can stop using TODODO at any time, which will cease further data collection.</li>
             </ul>
