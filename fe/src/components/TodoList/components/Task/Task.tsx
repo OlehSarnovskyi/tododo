@@ -170,10 +170,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                         onClick={markAs}
                     />
                 </ListItemIcon>
-                <ListItemText
-                    className="task"
-                    primary={task.text}
-                />
+                <ListItemText primary={task.text}/>
             </ListItemButton>
         </ListItem>
     )
