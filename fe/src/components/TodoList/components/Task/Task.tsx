@@ -47,7 +47,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
 
     function deleteT(): void {
         deleteTask(api)(task._id).then(() => {
-            getTasksByUserIdAndDate(api)(date).then(tasks => {
+            getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY')).then(tasks => {
                 setTasksByUserIdAndDate(tasks)
             })
         })
@@ -60,7 +60,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
         }
         if (e.key === 'Enter') {
             editTask(api)({_id: task._id, text: (e.target as any).value}).then(() => {
-                getTasksByUserIdAndDate(api)(date).then(tasks => {
+                getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY')).then(tasks => {
                     setTasksByUserIdAndDate(tasks)
                 })
             })
@@ -70,7 +70,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
     function markAs(): void {
         markAsTask(api)(task._id).then(() => {
             setTimeout(() => {
-                getTasksByUserIdAndDate(api)(date).then(tasks => {
+                getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY')).then(tasks => {
                     setTasksByUserIdAndDate(tasks)
                 })
             }, 200)

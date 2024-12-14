@@ -11,6 +11,7 @@ function Calendar({date, setDate}) {
                     closeOnSelect
                     defaultValue={dayjs(date) as PickerValidDate}
                     onChange={(date) => setDate(date)}
+                    format="DD MMM YYYY dddd"
                     sx={{width: '100%'}}
                     slotProps={{
                         actionBar: {actions: ['today']}
