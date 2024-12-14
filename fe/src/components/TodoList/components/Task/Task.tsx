@@ -95,6 +95,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
     return (
         isEditMode
         ? <TextField
+                autoFocus
                 sx={{width: '100%'}}
                 variant="outlined"
                 defaultValue={task.text}

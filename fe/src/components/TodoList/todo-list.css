@@ -1,5 +1,7 @@
 .todo-list-tasks .MuiList-root {
     background-color: transparent;
+    overflow-y: auto;
+    max-height: 72vh;
 }
 
 .todo-list-no-tasks {

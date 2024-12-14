@@ -30,6 +30,7 @@ function CreateNew({instance, setIsAddingNew, isAddingNew, addNew}) {
                 <Button sx={{width: '100%'}} variant="outlined" onClick={startAddingNewInstance}>+ New {instance}</Button>
             ) : (
                 <TextField
+                    autoFocus
                     sx={{width: '100%'}}
                     label={"New" + instance}
                     variant="outlined"
