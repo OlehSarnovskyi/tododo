@@ -29,7 +29,7 @@ function App() {
         <div className="app">
             <Routes>
                 <Route exact path="/" element={<Main/>} />
-                <Route path="/terms-of-service-and-privacy-policy" element={<Terms/>} />
+                <Route path="/additional-terms-of-service-and-privacy-policy" element={<Terms/>} />
             </Routes>
             <Outlet />
             <Snackbar

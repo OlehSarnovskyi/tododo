@@ -7,7 +7,7 @@ function Terms() {
     return (
         <div className="terms">
             <Link onClick={() => navigate('/')}>Go back</Link>
-            <h1 className="terms-h1">Terms of Service and Privacy Policy</h1>
+            <h1 className="terms-h1">Additional Terms of Service and Privacy Policy</h1>
             <b>Effective Date: 14 Dec 2024</b>
             <p>
                 Welcome to TODODO, a Telegram mini-application for managing your daily tasks. By using TODODO, you agree
