@@ -2,6 +2,7 @@ import './Task.css'
 import {
     Checkbox,
     IconButton,
+    InputAdornment,
     ListItem,
     ListItemButton,
     ListItemIcon,
@@ -14,6 +15,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {useState} from "react";
 import {deleteTask, editTask, getTasksByUserIdAndDate, markAsTask} from "../../../../services/tasks.service";
 import {useApiWithSnackbar} from "../../../../services/api.service";
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
 
 const OPTIONS = [
     'Edit',
@@ -26,6 +29,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
     const api = useApiWithSnackbar()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const [isEditMode, setEditMode] = useState<boolean>(false)
+    const [inputText, setInputText] = useState<string>(task.text)
     const open = Boolean(anchorEl!)
     const handleClick = (event: MouseEvent) => {
         setAnchorEl((event as any).currentTarget)
@@ -40,9 +44,14 @@ function Task({task, date, setTasksByUserIdAndDate}) {
         }
     }
 
-    function closeMenu(e: Event) {
+    function closeMenu(e: Event): void {
         e.stopPropagation()
         setAnchorEl(null)
+    }
+
+    function closeMenuAndEditMode(): void {
+        setAnchorEl(null)
+        setEditMode(false)
     }
 
     function deleteT(): void {
@@ -54,12 +63,13 @@ function Task({task, date, setTasksByUserIdAndDate}) {
     }
 
     function editByEnter(e: React.KeyboardEvent<HTMLDivElement>): void {
-        if (e.key === 'Enter' || e.key === 'Escape') {
-            setEditMode(false)
-            setAnchorEl(null)
+        setInputText((e.target as any).value)
+        // TODO: || e.key === 'Escape' only for PC
+        if (e.key === 'Enter') {
+            closeMenuAndEditMode()
         }
         if (e.key === 'Enter') {
-            editTask(api)({_id: task._id, text: (e.target as any).value}).then(() => {
+            editTask(api)({_id: task._id, text: inputText}).then(() => {
                 getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY')).then(tasks => {
                     setTasksByUserIdAndDate(tasks)
                 })
@@ -67,19 +77,43 @@ function Task({task, date, setTasksByUserIdAndDate}) {
         }
     }
 
-    function markAs(): void {
-        markAsTask(api)(task._id).then(() => {
-            setTimeout(() => {
-                getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY')).then(tasks => {
-                    setTasksByUserIdAndDate(tasks)
-                })
-            }, 200)
+    function edit(text: string): void {
+        closeMenuAndEditMode()
+        editTask(api)({_id: task._id, text}).then(() => {
+            getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY')).then(tasks => {
+                setTasksByUserIdAndDate(tasks)
+            })
         })
+    }
+
+    async function markAs(): Promise<void> {
+        await markAsTask(api)(task._id)
+        const tasks = await getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY'))
+        setTasksByUserIdAndDate(tasks)
     }
 
     return (
         isEditMode
-        ? <TextField sx={{width: '100%'}} variant="outlined" defaultValue={task.text} onKeyDown={(e) => editByEnter(e)} />
+        ? <TextField
+                sx={{width: '100%'}}
+                variant="outlined"
+                defaultValue={task.text}
+                onKeyUp={(e) => editByEnter(e)}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton onClick={inputText.trim().length
+                                ? () => edit(inputText)
+                                : closeMenuAndEditMode
+                            }>
+                                {inputText.trim().length
+                                ? <DoneIcon/>
+                                : <CloseIcon/>}
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }}
+            />
         : <ListItem
             key={task._id}
             secondaryAction={
