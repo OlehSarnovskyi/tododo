@@ -1,8 +1,5 @@
 .app {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
+    margin-bottom: 30px;
 }
 
 .app__container {
@@ -13,6 +10,7 @@
     width: 70vw;
     max-width: 350px;
     height: calc(100vh - 50px);
+    margin: 20px auto 0;
 }
 
 .link-terms {
