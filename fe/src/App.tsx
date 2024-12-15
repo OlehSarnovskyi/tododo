@@ -4,7 +4,7 @@ import Terms from "./pages/terms-of-service-and-privacy-policy/terms-of-service-
 import Main from "./pages/main/main";
 import {useEffect, useState} from "react";
 import {login} from "./services/login.service";
-import {Snackbar} from "@mui/material";
+import {Alert, Snackbar} from "@mui/material";
 import {useApiWithSnackbar} from "./services/api.service";
 import LinearProgressBar from "./components/linear-progress-bar";
 
@@ -36,10 +36,14 @@ function App() {
             <Outlet />
             <Snackbar
                 open={snackbar.open}
-                message={snackbar.message}
-                onClose={() => setSnackbar({open: false, message: null})}
-                autoHideDuration={1500}
-            />
+                autoHideDuration={2000}
+                onClose={() => setSnackbar({open: false})}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
+            >
+                <Alert severity="info">
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </div>
     )
 }
