@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {login} from "./services/login.service";
 import {Snackbar} from "@mui/material";
 import {useApiWithSnackbar} from "./services/api.service";
+import LinearProgressBar from "./components/linear-progress-bar";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
 
     return (
         <div className="app">
+            <LinearProgressBar/>
             <Routes>
                 <Route exact path="/" element={<Main/>} />
                 <Route path="/additional-terms-of-service-and-privacy-policy" element={<Terms/>} />

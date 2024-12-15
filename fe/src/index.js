@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 import {SnackbarProvider} from "./services/snackbar.service";
 import {createTheme, ThemeProvider} from "@mui/material";
+import {LoadingProvider} from "./services/loading.service";
 
 const theme = createTheme({
     palette: {
@@ -21,7 +22,9 @@ root.render(
         <ThemeProvider theme={theme}>
             <BrowserRouter>
                 <SnackbarProvider>
-                    <App/>
+                    <LoadingProvider>
+                        <App/>
+                    </LoadingProvider>
                 </SnackbarProvider>
             </BrowserRouter>
         </ThemeProvider>
