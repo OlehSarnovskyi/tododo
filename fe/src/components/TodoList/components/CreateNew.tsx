@@ -13,7 +13,7 @@ function CreateNew({instance, setIsAddingNew, isAddingNew, addNew}) {
     function addNewByEnter(e: React.KeyboardEvent<HTMLDivElement>): void {
         setInputText((e.target as any).value)
         // TODO: || e.key === 'Escape' only top PC
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && inputText.trim().length) {
             add(inputText)
         }
     }

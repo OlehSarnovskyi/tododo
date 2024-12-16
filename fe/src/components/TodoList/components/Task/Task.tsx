@@ -65,10 +65,11 @@ function Task({task, date, setTasksByUserIdAndDate}) {
     function editByEnter(e: React.KeyboardEvent<HTMLDivElement>): void {
         setInputText((e.target as any).value)
         // TODO: || e.key === 'Escape' only for PC
-        if (e.key === 'Enter') {
+        // if (e.key === 'Enter') {
+        //   closeMenuAndEditMode()
+        // }
+        if (e.key === 'Enter' && inputText.trim().length) {
             closeMenuAndEditMode()
-        }
-        if (e.key === 'Enter') {
             editTask(api)({_id: task._id, text: inputText}).then(() => {
                 getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY')).then(tasks => {
                     setTasksByUserIdAndDate(tasks)
