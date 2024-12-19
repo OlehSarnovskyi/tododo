@@ -14,7 +14,14 @@ function Calendar({date, setDate}) {
                     format="DD MMM YYYY dddd"
                     sx={{width: '100%'}}
                     slotProps={{
-                        actionBar: {actions: ['today']}
+                        actionBar: {
+                            actions: ['cancel', 'today'],
+                            style: {
+                                display: 'flex',
+                                // @ts-ignore
+                                'justify-content': 'space-between',
+                            }
+                        }
                     }}
                 />
             </div>
