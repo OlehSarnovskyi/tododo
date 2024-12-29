@@ -17,10 +17,18 @@ import {deleteTask, editTask, getTasksByUserIdAndDate, markAsTask} from "../../.
 import {useApiWithSnackbar} from "../../../../services/api.service";
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const OPTIONS = [
-    'Edit',
-    'Delete'
+    {
+        title: 'Edit',
+        value: 'edit'
+    },
+    {
+        title: 'Delete',
+        value: 'delete'
+    }
 ];
 
 const ITEM_HEIGHT = 48;
@@ -35,11 +43,11 @@ function Task({task, date, setTasksByUserIdAndDate}) {
         setAnchorEl((event as any).currentTarget)
     };
 
-    function handleClose(option: 'Edit' | 'Delete'): void {
+    function handleClose(option: 'edit' | 'delete'): void {
         setAnchorEl(null)
-        if (option === 'Delete') {
+        if (option === 'delete') {
             deleteT()
-        } else if (option === 'Edit') {
+        } else if (option === 'edit') {
             setEditMode(true)
         }
     }
@@ -148,14 +156,24 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                             paper: {
                                 style: {
                                     maxHeight: ITEM_HEIGHT * 4.5,
-                                    width: '10ch',
+                                    width: '12ch'
                                 },
                             },
                         }}
                     >
                         {OPTIONS.map((option) => (
-                            <MenuItem key={option} onClick={() => handleClose(option)}>
-                                {option}
+                            <MenuItem
+                                key={option.value}
+                                onClick={() => handleClose(option.value)}
+                                sx={{
+                                    fontSize: '14px'
+                                }}
+                            >
+                                <ListItemIcon>
+                                    {option.value === 'edit' && <EditIcon fontSize="small"/>}
+                                    {option.value === 'delete' && <DeleteIcon fontSize="small"/>}
+                                </ListItemIcon>
+                                {option.title}
                             </MenuItem>
                         ))}
                     </Menu>
