@@ -20,8 +20,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const OPTIONS = [
     'Edit',
-    'Delete',
-    'Copy text'
+    'Delete'
 ];
 
 const ITEM_HEIGHT = 48;
@@ -42,8 +41,6 @@ function Task({task, date, setTasksByUserIdAndDate}) {
             deleteT()
         } else if (option === 'Edit') {
             setEditMode(true)
-        } else if (option === 'Copy text') {
-            copyText()
         }
     }
 
@@ -55,10 +52,6 @@ function Task({task, date, setTasksByUserIdAndDate}) {
     function closeMenuAndEditMode(): void {
         setAnchorEl(null)
         setEditMode(false)
-    }
-
-    function copyText(): void {
-        navigator.clipboard.writeText(task.text)
     }
 
     function deleteT(): void {
@@ -179,7 +172,7 @@ function Task({task, date, setTasksByUserIdAndDate}) {
                         onClick={markAs}
                     />
                 </ListItemIcon>
-                <ListItemText primary={task.text}/>
+                <ListItemText className="task__item-text" primary={task.text}/>
             </ListItemButton>
         </ListItem>
     )

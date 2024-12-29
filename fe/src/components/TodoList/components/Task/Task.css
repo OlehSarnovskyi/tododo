@@ -1,3 +1,7 @@
 .task__item-icon {
     min-width: auto !important;
 }
+
+.task__item-text {
+    user-select: text;
+}
