@@ -1,16 +1,19 @@
 import Calendar from "../../components/Calendar/Calendar";
 import TodoList from "../../components/TodoList/TodoList";
-import {useEffect, useState} from "react";
+import {forwardRef, useEffect, useState} from "react";
 import dayjs from "dayjs";
 import {getTasksByUserIdAndDate} from "../../services/tasks.service";
-import Link from '@mui/material/Link';
 import {useApiWithSnackbar} from "../../services/api.service";
-import {useNavigate} from "react-router-dom";
+import {Link, LinkProps} from "react-router-dom";
+import {BottomNavigation, BottomNavigationAction, Paper} from "@mui/material";
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
+const LinkBehavior = forwardRef<any, Omit<LinkProps, 'to'>>(
+    (props, ref) => <Link ref={ref} to="/" {...props} role={undefined} />
+);
 
 function Main() {
     const api = useApiWithSnackbar()
-    const navigate = useNavigate()
     const [date, setDate] = useState(dayjs())
     const [tasksByUserIdAndDate, setTasksByUserIdAndDate] = useState([])
 
@@ -27,6 +30,8 @@ function Main() {
         tgPlatform = true
     }
 
+    const [bottomNavigation, setBottomNavigation] = useState();
+
     return (
         <>
             {tgPlatform
@@ -38,7 +43,22 @@ function Main() {
                             tasks={tasksByUserIdAndDate}
                             setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>
                     </div>
-                    <Link className="link-terms" onClick={() => navigate('additional-terms-of-service-and-privacy-policy')}>Additional Terms of Service and Privacy Policy</Link>
+                    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+                        <BottomNavigation
+                            value={bottomNavigation}
+                            onChange={(_, newValue) => {
+                                setBottomNavigation(newValue)
+                            }}
+                        >
+                            <BottomNavigationAction
+                                label="How to use"
+                                value="how-to-use"
+                                icon={<MenuBookIcon />}
+                                component={LinkBehavior}
+                                to="additional-terms-of-service-and-privacy-policy"
+                            />
+                        </BottomNavigation>
+                    </Paper>
                   </div>
                 : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
         </>

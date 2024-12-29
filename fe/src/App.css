@@ -12,8 +12,3 @@
     height: calc(100vh - 50px);
     margin: 20px auto 0;
 }
-
-.link-terms {
-    font-size: 12px !important;
-    text-align: center;
-}
