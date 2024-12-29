@@ -55,7 +55,7 @@ function Main() {
                                 value="how-to-use"
                                 icon={<MenuBookIcon />}
                                 component={LinkBehavior}
-                                to="additional-terms-of-service-and-privacy-policy"
+                                to="how-to-use"
                             />
                         </BottomNavigation>
                     </Paper>

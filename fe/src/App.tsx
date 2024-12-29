@@ -7,6 +7,7 @@ import {login} from "./services/login.service";
 import {Alert, Snackbar} from "@mui/material";
 import {useApiWithSnackbar} from "./services/api.service";
 import LinearProgressBar from "./components/linear-progress-bar";
+import HowToUse from "./pages/how-to-use/how-to-use";
 
 
 function App() {
@@ -18,10 +19,12 @@ function App() {
     useEffect(() => {
         if (Telegram.WebApp.initDataUnsafe.user) {
             login(api).then((message) => {
-                setSnackbar({
-                    open: true,
-                    message
-                })
+                if (message) {
+                    setSnackbar({
+                        open: true,
+                        message
+                    })
+                }
             })
         }
     }, [])
@@ -32,6 +35,7 @@ function App() {
             <Routes>
                 <Route exact path="/" element={<Main/>} />
                 <Route path="/additional-terms-of-service-and-privacy-policy" element={<Terms/>} />
+                <Route path="/how-to-use" element={<HowToUse/>} />
             </Routes>
             <Outlet />
             <Snackbar
