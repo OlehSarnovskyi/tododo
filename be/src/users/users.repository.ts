@@ -14,7 +14,7 @@ export class UsersRepository {
       createdAt: Date.now()
     });
     (await createdDocument.save()).toJSON()
-    return await 'Accout created and logged in'
+    return await 'Accout has been created'
   }
 
   async findOne(id: number): Promise<UserDocument> {

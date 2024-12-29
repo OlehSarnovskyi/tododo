@@ -13,7 +13,6 @@ export class UsersService {
         if (!exists) {
             return await this.usersRepository.create(userDto)
         }
-        return await 'Logged in'
     }
 
     private async validateLogin(id: number) {
