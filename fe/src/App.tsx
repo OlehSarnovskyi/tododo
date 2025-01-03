@@ -32,22 +32,24 @@ function App() {
     return (
         <div className="app">
             <LinearProgressBar/>
-            <Routes>
-                <Route exact path="/" element={<Main/>} />
-                <Route path="/additional-terms-of-service-and-privacy-policy" element={<Terms/>} />
-                <Route path="/how-to-use" element={<HowToUse/>} />
-            </Routes>
-            <Outlet />
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={2000}
-                onClose={() => setSnackbar({open: false})}
-                anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
-            >
-                <Alert severity="info">
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
+            <div className="app__container">
+                <Routes>
+                    <Route exact path="/" element={<Main/>}/>
+                    <Route path="/additional-terms-of-service-and-privacy-policy" element={<Terms/>}/>
+                    <Route path="/how-to-use" element={<HowToUse/>}/>
+                </Routes>
+                <Outlet/>
+                <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={2000}
+                    onClose={() => setSnackbar({open: false})}
+                    anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
+                >
+                    <Alert severity="info">
+                        {snackbar.message}
+                    </Alert>
+                </Snackbar>
+            </div>
         </div>
     )
 }

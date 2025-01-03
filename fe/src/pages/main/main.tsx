@@ -35,7 +35,7 @@ function Main() {
     return (
         <>
             {tgPlatform
-                ? <div className="app__container">
+                ? <>
                     <div>
                         <Calendar date={date} setDate={setDate}/>
                         <TodoList
@@ -59,7 +59,7 @@ function Main() {
                             />
                         </BottomNavigation>
                     </Paper>
-                  </div>
+                  </>
                 : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
         </>
     )
