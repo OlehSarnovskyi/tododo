@@ -35,8 +35,8 @@ function App() {
             <div className="app__container">
                 <Routes>
                     <Route exact path="/" element={<Main/>}/>
-                    <Route path="/additional-terms-of-service-and-privacy-policy" element={<Terms/>}/>
                     <Route path="/how-to-use" element={<HowToUse/>}/>
+                    <Route path="/additional-terms-of-service-and-privacy-policy" element={<Terms/>}/>
                 </Routes>
                 <Outlet/>
                 <Snackbar

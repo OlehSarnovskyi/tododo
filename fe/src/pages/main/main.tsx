@@ -7,6 +7,7 @@ import {useApiWithSnackbar} from "../../services/api.service";
 import {Link, LinkProps} from "react-router-dom";
 import {BottomNavigation, BottomNavigationAction, Paper} from "@mui/material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import PolicyIcon from '@mui/icons-material/Policy';
 
 const LinkBehavior = forwardRef<any, Omit<LinkProps, 'to'>>(
     (props, ref) => <Link ref={ref} to="/" {...props} role={undefined} />
@@ -51,11 +52,16 @@ function Main() {
                             }}
                         >
                             <BottomNavigationAction
-                                label="How to use"
                                 value="how-to-use"
                                 icon={<MenuBookIcon />}
                                 component={LinkBehavior}
                                 to="how-to-use"
+                            />
+                            <BottomNavigationAction
+                                value="additional-terms-of-service-and-privacy-policy"
+                                icon={<PolicyIcon />}
+                                component={LinkBehavior}
+                                to="additional-terms-of-service-and-privacy-policy"
                             />
                         </BottomNavigation>
                     </Paper>
