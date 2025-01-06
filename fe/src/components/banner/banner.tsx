@@ -20,8 +20,9 @@ export default function Banner() {
 
             banner.current.append(conf)
             banner.current.append(script)
+            console.log('banner!!!', banner);
         }
     }, [banner])
 
-    return <div className="mx-2 my-5 border border-gray-200 justify-center items-center text-white text-center" ref={banner}></div>
+    return <div ref={banner}></div>
 }

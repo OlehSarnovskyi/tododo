@@ -40,6 +40,7 @@ function Main() {
                 ? <>
                     <div>
                         <Calendar date={date} setDate={setDate}/>
+                        <Banner/>
                         <TodoList
                             date={dayjs(date)}
                             tasks={tasksByUserIdAndDate}
