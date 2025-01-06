@@ -8,6 +8,7 @@ import {Link, LinkProps} from "react-router-dom";
 import {BottomNavigation, BottomNavigationAction, Paper} from "@mui/material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PolicyIcon from '@mui/icons-material/Policy';
+import Banner from "../../components/banner/banner";
 
 const LinkBehavior = forwardRef<any, Omit<LinkProps, 'to'>>(
     (props, ref) => <Link ref={ref} to="/" {...props} role={undefined} />
@@ -44,7 +45,7 @@ function Main() {
                             tasks={tasksByUserIdAndDate}
                             setTasksByUserIdAndDate={setTasksByUserIdAndDate}/>
                     </div>
-                    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+                    <Paper sx={{position: 'fixed', bottom: 0, left: 0, right: 0}} elevation={3}>
                         <BottomNavigation
                             value={bottomNavigation}
                             onChange={(_, newValue) => {
@@ -53,20 +54,21 @@ function Main() {
                         >
                             <BottomNavigationAction
                                 value="how-to-use"
-                                icon={<MenuBookIcon />}
+                                icon={<MenuBookIcon/>}
                                 component={LinkBehavior}
                                 to="how-to-use"
                             />
                             <BottomNavigationAction
                                 value="additional-terms-of-service-and-privacy-policy"
-                                icon={<PolicyIcon />}
+                                icon={<PolicyIcon/>}
                                 component={LinkBehavior}
                                 to="additional-terms-of-service-and-privacy-policy"
                             />
                         </BottomNavigation>
                     </Paper>
-                  </>
+                </>
                 : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
+            <Banner/>
         </>
     )
 }
