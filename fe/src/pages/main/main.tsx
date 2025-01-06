@@ -40,7 +40,7 @@ function Main() {
                 ? <>
                     <div>
                         <Calendar date={date} setDate={setDate}/>
-                        <Banner/>
+                        <Banner slot='e728c0d1a1e70cafd453672a3376d226'/>
                         <TodoList
                             date={dayjs(date)}
                             tasks={tasksByUserIdAndDate}
@@ -69,7 +69,7 @@ function Main() {
                     </Paper>
                 </>
                 : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
-            <Banner/>
+            <Banner slot='e728c0d1a1e70cafd453672a3376d226'/>
         </>
     )
 }

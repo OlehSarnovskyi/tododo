@@ -1,28 +1,47 @@
 import React, {useEffect, useRef} from "react";
 
-export default function Banner() {
-    const banner = useRef<HTMLDivElement>()
+interface AdsterraProps {
+    slot: string;
+}
 
-    const atOptions = {
-        key: 'e728c0d1a1e70cafd453672a3376d226',
-        format: 'iframe',
-        height: 50,
-        width: 320,
-        params: {},
-    }
+const getId = (slot: string) => `atContainer-${slot}`;
+
+export default function Banner({ slot }: AdsterraProps) {
+    const ref = useRef<HTMLDivElement>()
+
     useEffect(() => {
-        if (banner.current && !banner.current.firstChild) {
-            const conf = document.createElement('script')
-            const script = document.createElement('script')
-            script.type = 'text/javascript'
-            script.src = `//pl25492863.profitablecpmrate.com/${atOptions.key}/invoke.js`
-            conf.innerHTML = `atOptions = ${JSON.stringify(atOptions)}`
+        if (!ref.current.firstChild && slot) {
+            const atAsyncOptions = {
+                key: slot,
+                format: 'js',
+                async: true,
+                container: getId(slot),
+                params: {},
+            };
 
-            banner.current.append(conf)
-            banner.current.append(script)
-            console.log('banner!!!', banner);
+            const conf = document.createElement('script');
+            conf.innerHTML = `
+        if (typeof atAsyncOptions !== 'object') var atAsyncOptions = [];
+        atAsyncOptions.push(${JSON.stringify(atAsyncOptions, null, 2)});
+      `;
+            conf.type = 'text/javascript';
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `//pl25492863.profitablecpmrate.com/${slot}/invoke.js`;
+            script.type = 'text/javascript';
+
+            if (ref.current) {
+                ref.current.append(conf);
+                ref.current.append(script);
+            }
         }
-    }, [banner])
+    }, [slot]);
 
-    return <div ref={banner}></div>
+    return (
+        <>
+            <div {...{ ref }} />
+            <div id={getId(slot)} />
+        </>
+    );
 }
