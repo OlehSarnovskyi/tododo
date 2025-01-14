@@ -37,8 +37,8 @@ function TodoList({date, tasks, setTasksByUserIdAndDate}) {
             />
             <hr/>
             <div className="todo-list-tasks">
-                {tasks.length
-                    && <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+                {tasks.length > 0 &&
+                    <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
                         {tasksTemplates}
                     </List>}
                 {tasks.length === 0 &&
