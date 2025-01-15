@@ -8,6 +8,7 @@ import {Link, LinkProps} from "react-router-dom";
 import {BottomNavigation, BottomNavigationAction, Paper} from "@mui/material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PolicyIcon from '@mui/icons-material/Policy';
+import AdButton from "../../components/ad-button/ad-button";
 
 const LinkBehavior = forwardRef<any, Omit<LinkProps, 'to'>>(
     (props, ref) => <Link ref={ref} to="/" {...props} role={undefined} />
@@ -64,6 +65,7 @@ function Main() {
                                 to="additional-terms-of-service-and-privacy-policy"
                             />
                         </BottomNavigation>
+                        <AdButton/>
                     </Paper>
                 </>
                 : <p>Run this telegram mini app by <a href="https://t.me/tododo_365_bot">@tododo_365_bot</a></p>}
