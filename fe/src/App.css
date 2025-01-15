@@ -12,3 +12,7 @@
     height: calc(100vh - 50px);
     margin: 20px auto 0;
 }
+
+.MuiSnackbar-anchorOriginBottomCenter {
+    bottom: 70px !important;
+}
