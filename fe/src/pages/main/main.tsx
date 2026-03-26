@@ -24,6 +24,7 @@ function Main() {
         getTasksByUserIdAndDate(api)(formattedDate).then(tasks => {
             setTasksByUserIdAndDate(tasks)
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [date])
 
     let tgPlatform = false
