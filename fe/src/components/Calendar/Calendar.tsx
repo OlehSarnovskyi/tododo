@@ -45,7 +45,7 @@ function Calendar({date, setDate}) {
                     closeOnSelect
                     value={date}
                     onChange={(date) => setDate(date)}
-                    format="DD MMM YYYY dddd"
+                    format="DD MMM YYYY, ddd"
                     sx={{
                         flex: 1,
                         "& .MuiInputBase-input": {

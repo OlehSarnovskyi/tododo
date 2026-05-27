@@ -15,7 +15,7 @@ export class TasksRepository {
 
   async getMaxOrder(userId: number, date: string): Promise<number> {
     const task = await this.model.findOne({ userId, date }, { order: 1 }, { sort: { order: -1 }, lean: true });
-    return task ? task.order : -1;
+    return task ? (task.order ?? -1) : -1;
   }
 
   async create(document: Omit<TaskDocument, '_id' | 'createdAt' | 'status' | 'order'> & { userId: number, date: string, order: number }): Promise<TaskDocument> {
