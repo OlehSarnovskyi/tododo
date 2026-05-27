@@ -6,7 +6,8 @@ export async function login(api: AxiosInstance): Promise<string> {
         first_name: Telegram.WebApp.initDataUnsafe.user?.first_name,
         last_name: Telegram.WebApp.initDataUnsafe.user?.last_name,
         username: Telegram.WebApp.initDataUnsafe.user?.username,
-        language_code: Telegram.WebApp.initDataUnsafe.user?.language_code
-    })
-    return res.data
+        language_code: Telegram.WebApp.initDataUnsafe.user?.language_code,
+        initData: Telegram.WebApp.initData,
+    });
+    return res.data;
 }

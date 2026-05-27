@@ -12,6 +12,7 @@ import {DatabaseModule} from './shared/database.module';
             isGlobal: true,
             validationSchema: Joi.object({
                 MONGODB_URI: Joi.string().required(),
+                BOT_TOKEN: Joi.string().required(),
             })
         }),
         UsersModule

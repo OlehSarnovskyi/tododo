@@ -12,6 +12,7 @@ import {
   TextField
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { useRef, useState } from "react";
 import { deleteTask, editTask, getTasksByUserIdAndDate, markAsTask } from "../../../../services/tasks.service";
 import { useApiWithSnackbar } from "../../../../services/api.service";
@@ -19,16 +20,12 @@ import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 const OPTIONS = [
-  {
-    title: "Edit",
-    value: "edit"
-  },
-  {
-    title: "Delete",
-    value: "delete"
-  }
+  { title: "Edit", value: "edit" },
+  { title: "Delete", value: "delete" },
 ];
 
 const ITEM_HEIGHT = 48;
@@ -39,9 +36,18 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEditMode, setEditMode] = useState<boolean>(false);
   const [inputText, setInputText] = useState<string>(task.text);
-  const open = Boolean(anchorEl!);
-  const handleClick = (event: MouseEvent) => {
-    setAnchorEl((event as any).currentTarget);
+  const open = Boolean(anchorEl);
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
   };
 
   function handleClose(option: "edit" | "delete"): void {
@@ -53,7 +59,7 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
     }
   }
 
-  function closeMenu(e: Event): void {
+  function closeMenu(e: React.SyntheticEvent): void {
     e.stopPropagation();
     setAnchorEl(null);
   }
@@ -76,7 +82,7 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
   }
 
   function editByEnter(e: React.KeyboardEvent<HTMLDivElement>): void {
-    const currentText = (e.target as any).value;
+    const currentText = (e.target as HTMLInputElement).value;
     setInputText(currentText);
     if (e.key === "Enter" && currentText.trim().length) {
       edit(currentText);
@@ -109,97 +115,94 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
   }
 
   return (
-    isEditMode
-      ? <TextField
-        autoFocus
-        sx={{ width: "100%" }}
-        variant="outlined"
-        defaultValue={task.text}
-        onKeyUp={(e) => editByEnter(e)}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={inputText.trim().length
-                ? () => edit(inputText)
-                : closeMenuAndEditMode
-              }>
-                {inputText.trim().length
-                  ? <DoneIcon />
-                  : <CloseIcon />}
-              </IconButton>
-            </InputAdornment>
-          )
-        }}
-      />
-      : <ListItem
-        key={task._id}
-        secondaryAction={
-          <IconButton aria-label="more"
-                      id="long-button"
-                      aria-controls={open ? "long-menu" : undefined}
-                      aria-expanded={open ? "true" : undefined}
-                      aria-haspopup="true"
-                      onClick={handleClick}
-          >
-            <MoreVertIcon />
-
-            <Menu
-              id="long-menu"
-              MenuListProps={{
-                "aria-labelledby": "long-button"
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={closeMenu}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "left"
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left"
-              }}
-              slotProps={{
-                paper: {
-                  style: {
-                    maxHeight: ITEM_HEIGHT * 4.5,
-                    width: "12ch"
-                  }
-                }
-              }}
+    <div ref={setNodeRef} style={style}>
+      {isEditMode
+        ? <TextField
+          autoFocus
+          sx={{ width: "100%" }}
+          variant="outlined"
+          defaultValue={task.text}
+          onKeyUp={(e) => editByEnter(e)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={inputText.trim().length
+                  ? () => edit(inputText)
+                  : closeMenuAndEditMode
+                }>
+                  {inputText.trim().length ? <DoneIcon /> : <CloseIcon />}
+                </IconButton>
+              </InputAdornment>
+            )
+          }}
+        />
+        : <ListItem
+          key={task._id}
+          secondaryAction={
+            <IconButton
+              aria-label="more"
+              id="long-button"
+              aria-controls={open ? "long-menu" : undefined}
+              aria-expanded={open ? "true" : undefined}
+              aria-haspopup="true"
+              onClick={handleClick}
             >
-              {OPTIONS.map((option) => (
-                <MenuItem
-                  key={option.value}
-                  onClick={() => handleClose(option.value)}
-                  sx={{
-                    fontSize: "14px"
-                  }}
-                >
-                  <ListItemIcon>
-                    {option.value === "edit" && <EditIcon fontSize="small" />}
-                    {option.value === "delete" && <DeleteIcon fontSize="small" />}
-                  </ListItemIcon>
-                  {option.title}
-                </MenuItem>
-              ))}
-            </Menu>
+              <MoreVertIcon />
+              <Menu
+                id="long-menu"
+                MenuListProps={{ "aria-labelledby": "long-button" }}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={closeMenu}
+                anchorOrigin={{ vertical: "top", horizontal: "left" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
+                slotProps={{
+                  paper: {
+                    style: { maxHeight: ITEM_HEIGHT * 4.5, width: "12ch" }
+                  }
+                }}
+              >
+                {OPTIONS.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    onClick={() => handleClose(option.value as "edit" | "delete")}
+                    sx={{ fontSize: "14px" }}
+                  >
+                    <ListItemIcon>
+                      {option.value === "edit" && <EditIcon fontSize="small" />}
+                      {option.value === "delete" && <DeleteIcon fontSize="small" />}
+                    </ListItemIcon>
+                    {option.title}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </IconButton>
+          }
+          disablePadding
+        >
+          <IconButton
+            {...attributes}
+            {...listeners}
+            size="small"
+            sx={{ cursor: "grab", color: "text.disabled", ml: 0.5, touchAction: "none" }}
+            aria-label="drag to reorder"
+          >
+            <DragIndicatorIcon fontSize="small" />
           </IconButton>
-        }
-        disablePadding
-      >
-        <ListItemButton dense>
-          <ListItemIcon className="task__item-icon">
-            <Checkbox
-              edge="start"
-              disableRipple
-              checked={task.status}
-              onClick={markAs}
-            />
-          </ListItemIcon>
-          <ListItemText className="task__item-text" primary={task.text} />
-        </ListItemButton>
-      </ListItem>
+          <ListItemButton dense>
+            <ListItemIcon className="task__item-icon">
+              <Checkbox
+                edge="start"
+                disableRipple
+                checked={task.status}
+                onClick={markAs}
+              />
+            </ListItemIcon>
+            <ListItemText className="task__item-text" primary={task.text} />
+          </ListItemButton>
+        </ListItem>
+      }
+    </div>
   );
 }
 

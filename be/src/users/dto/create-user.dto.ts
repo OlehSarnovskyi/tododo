@@ -20,4 +20,8 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   language_code: string
+
+  @IsString()
+  @IsNotEmpty()
+  initData: string
 }

@@ -14,6 +14,9 @@ export class TaskDocument extends AbstractDocument {
 
   @Prop({ required: true, default: StatusEnum.ACTIVE })
   status: boolean
+
+  @Prop({ required: true, default: 0 })
+  order: number
 }
 
 export const TaskSchema = SchemaFactory.createForClass(TaskDocument)

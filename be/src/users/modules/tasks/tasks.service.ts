@@ -4,34 +4,37 @@ import { TasksRepository } from './tasks.repository';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskDocument } from './models/task.schema';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { ReorderTaskItemDto } from './dto/reorder-tasks.dto';
 
 @Injectable()
 export class TasksService {
   constructor(private readonly tasksRepository: TasksRepository) {}
 
-  async findAllByUserIdAndDate(query: {
-    userId: number;
-    date: string;
-  }): Promise<TaskDocument[]> {
+  async findAllByUserIdAndDate(query: { userId: number; date: string }): Promise<TaskDocument[]> {
     return await this.tasksRepository.findAllByUserIdAndDate(query);
   }
 
   async create(createTaskDto: CreateTaskDto) {
-    return await this.tasksRepository.create(createTaskDto);
+    const maxOrder = await this.tasksRepository.getMaxOrder(createTaskDto.userId, createTaskDto.date);
+    return await this.tasksRepository.create({ ...createTaskDto, order: maxOrder + 1 });
   }
 
-  async update(_id: string, updatePostDto: UpdateTaskDto) {
+  async update(_id: string, userId: number, updateTaskDto: UpdateTaskDto) {
     return await this.tasksRepository.findOneAndUpdate(
-      { _id },
-      { $set: updatePostDto },
+      { _id, userId },
+      { $set: updateTaskDto },
     );
   }
 
-  async remove(_id: string) {
-    return await this.tasksRepository.findOneAndDelete({ _id });
+  async remove(_id: string, userId: number) {
+    return await this.tasksRepository.findOneAndDelete({ _id, userId });
   }
 
-  async markAs(_id: string) {
-    return await this.tasksRepository.findOneAndMarkAs({ _id });
+  async markAs(_id: string, userId: number) {
+    return await this.tasksRepository.findOneAndMarkAs({ _id, userId });
+  }
+
+  async reorder(tasks: ReorderTaskItemDto[]): Promise<void> {
+    await this.tasksRepository.reorder(tasks);
   }
 }
