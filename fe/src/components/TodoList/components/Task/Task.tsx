@@ -12,7 +12,7 @@ import {
   TextField
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { deleteTask, editTask, getTasksByUserIdAndDate, markAsTask } from "../../../../services/tasks.service";
 import { useApiWithSnackbar } from "../../../../services/api.service";
 import DoneIcon from "@mui/icons-material/Done";
@@ -35,6 +35,7 @@ const ITEM_HEIGHT = 48;
 
 function Task({ task, date, setTasksByUserIdAndDate }) {
   const api = useApiWithSnackbar();
+  const isSubmitting = useRef(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEditMode, setEditMode] = useState<boolean>(false);
   const [inputText, setInputText] = useState<string>(task.text);
@@ -63,9 +64,15 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
   }
 
   async function deleteT(): Promise<void> {
-    await deleteTask(api)(task._id);
-    const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
-    setTasksByUserIdAndDate(tasks);
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+    try {
+      await deleteTask(api)(task._id);
+      const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
+      setTasksByUserIdAndDate(tasks);
+    } finally {
+      isSubmitting.current = false;
+    }
   }
 
   function editByEnter(e: React.KeyboardEvent<HTMLDivElement>): void {
@@ -77,17 +84,28 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
   }
 
   async function edit(text: string): Promise<void> {
-    closeMenuAndEditMode();
-    await editTask(api)({ _id: task._id, text });
-    const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
-    setTasksByUserIdAndDate(tasks);
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+    try {
+      await editTask(api)({ _id: task._id, text });
+      const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
+      setTasksByUserIdAndDate(tasks);
+      closeMenuAndEditMode();
+    } finally {
+      isSubmitting.current = false;
+    }
   }
 
-
   async function markAs(): Promise<void> {
-    await markAsTask(api)(task._id);
-    const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
-    setTasksByUserIdAndDate(tasks);
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+    try {
+      await markAsTask(api)(task._id);
+      const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
+      setTasksByUserIdAndDate(tasks);
+    } finally {
+      isSubmitting.current = false;
+    }
   }
 
   return (

@@ -5,36 +5,63 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {IconButton} from "@mui/material";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import {useRef} from "react";
 
 function Calendar({date, setDate}) {
+    const touchStartX = useRef<number | null>(null);
 
     function setPreviousDay(): void {
-        const previousDay = dayjs(date).subtract(1, 'day')
-        setDate(previousDay)
+        setDate(dayjs(date).subtract(1, 'day'));
     }
 
     function setNextDay(): void {
-        const nextDay = dayjs(date).add(1, 'day')
-        setDate(nextDay)
+        setDate(dayjs(date).add(1, 'day'));
+    }
+
+    function handleTouchStart(e: React.TouchEvent): void {
+        touchStartX.current = e.touches[0].clientX;
+    }
+
+    function handleTouchEnd(e: React.TouchEvent): void {
+        if (touchStartX.current === null) return;
+        const diff = e.changedTouches[0].clientX - touchStartX.current;
+        if (Math.abs(diff) > 50) {
+            diff < 0 ? setNextDay() : setPreviousDay();
+        }
+        touchStartX.current = null;
     }
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs as PickerValidDate}>
-            <div className="calendar">
-                <IconButton className="calendar-icon calendar-icon-back" aria-label="previous day" onClick={setPreviousDay}>
-                    <ArrowBackIosNewIcon />
+            <div
+                className="calendar"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+            >
+                <IconButton aria-label="previous day" onClick={setPreviousDay}>
+                    <ArrowBackIosNewIcon/>
                 </IconButton>
                 <MobileDatePicker
                     closeOnSelect
-                    defaultValue={dayjs(date) as PickerValidDate}
                     value={date}
                     onChange={(date) => setDate(date)}
                     format="DD MMM YYYY dddd"
                     sx={{
-                        width: '100%',
+                        flex: 1,
                         "& .MuiInputBase-input": {
-                            textAlign: "center"
-                        }
+                            textAlign: "center",
+                            cursor: "pointer",
+                            fontWeight: 500,
+                        },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                        },
+                        "& .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                        },
+                        "& .MuiInputBase-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                        },
                     }}
                     slotProps={{
                         actionBar: {
@@ -46,8 +73,8 @@ function Calendar({date, setDate}) {
                         }
                     }}
                 />
-                <IconButton className="calendar-icon calendar-icon-forward" aria-label="next day" onClick={setNextDay}>
-                    <ArrowForwardIosIcon />
+                <IconButton aria-label="next day" onClick={setNextDay}>
+                    <ArrowForwardIosIcon/>
                 </IconButton>
             </div>
         </LocalizationProvider>

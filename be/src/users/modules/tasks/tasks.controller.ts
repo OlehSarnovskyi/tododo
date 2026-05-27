@@ -29,6 +29,11 @@ export class TasksController {
     await this.tasksService.create(taskDto);
   }
 
+  @Patch('markAs/:id')
+  async markAs(@Param('id') id: string) {
+    await this.tasksService.markAs(id);
+  }
+
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     await this.tasksService.update(id, updateTaskDto);
@@ -37,10 +42,5 @@ export class TasksController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.tasksService.remove(id);
-  }
-
-  @Patch('markAs/:id')
-  async markAs(@Param('id') id: string) {
-    await this.tasksService.markAs(id);
   }
 }
