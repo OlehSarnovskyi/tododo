@@ -44,7 +44,7 @@ function Calendar({date, setDate}) {
                 <MobileDatePicker
                     closeOnSelect
                     value={date}
-                    onChange={(date) => setDate(date)}
+                    onChange={(newDate) => { if (newDate) setDate(newDate); }}
                     format="DD MMM YYYY, ddd"
                     sx={{
                         flex: 1,

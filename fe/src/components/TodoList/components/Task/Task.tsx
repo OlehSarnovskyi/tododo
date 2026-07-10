@@ -123,9 +123,14 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
   async function moveToTomorrow(): Promise<void> {
     if (isSubmitting.current) return;
     isSubmitting.current = true;
+    const nextDate = date.add(1, "day").format("DD.MM.YYYY");
+    // Optimistically remove the task from the current day — no full refetch,
+    // so the calendar/list don't flash while the request is in flight.
+    setTasksByUserIdAndDate((prev) => prev.filter((t) => t._id !== task._id));
     try {
-      const nextDate = date.add(1, "day").format("DD.MM.YYYY");
       await moveTask(api)(task._id, nextDate);
+    } catch {
+      // Request failed — restore the day from the server
       const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
       setTasksByUserIdAndDate(tasks);
     } finally {
@@ -177,7 +182,7 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
                 slotProps={{
                   paper: {
-                    style: { maxHeight: ITEM_HEIGHT * 4.5, width: "12ch" }
+                    style: { maxHeight: ITEM_HEIGHT * 4.5, minWidth: 168 }
                   }
                 }}
               >

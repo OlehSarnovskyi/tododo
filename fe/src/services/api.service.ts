@@ -8,41 +8,49 @@ export const api = axios.create({
     // https://tododo-be.vercel.app; http://localhost:3001
 });
 
-// Error handling interceptor
+// Mutable handlers, updated by the hook on each render. Interceptors are
+// registered ONCE (below) and read from this object, so they never stack.
+const handlers = {
+    startLoading: () => {},
+    stopLoading: () => {},
+    showSnackbar: (_message: string, _severity?: string) => {},
+};
+
+// Request interceptor — registered once at module load
+api.interceptors.request.use(
+    (config) => {
+        handlers.startLoading();
+        return config;
+    },
+    (error) => {
+        handlers.stopLoading();
+        return Promise.reject(error);
+    }
+);
+
+// Response interceptor — registered once at module load
+api.interceptors.response.use(
+    (response) => {
+        handlers.stopLoading();
+        return response;
+    },
+    (error) => {
+        handlers.stopLoading();
+        const message =
+            error.response?.data?.message || error.message || 'Something went wrong';
+        handlers.showSnackbar(message, 'error');
+        return Promise.reject(error);
+    }
+);
+
 export const useApiWithSnackbar = () => {
     const showSnackbar = useSnackbar();
     const { startLoading, stopLoading } = useLoading();
 
-    // Request interceptor
-    api.interceptors.request.use(
-        (config) => {
-            startLoading()
-            return config
-        },
-        (error) => {
-            stopLoading()
-            return Promise.reject(error)
-        }
-    );
-
-    // Add response interceptor
-    api.interceptors.response.use(
-        (response) => {
-            stopLoading()
-            return response
-        },
-        (error) => {
-            stopLoading()
-            // Extract error message
-            const message =
-                error.response?.data?.message || error.message || 'Something went wrong';
-
-            // Show Snackbar with error
-            showSnackbar(message, 'error');
-
-            return Promise.reject(error);
-        }
-    );
+    // Keep the singleton interceptors pointed at the latest context callbacks
+    handlers.startLoading = startLoading;
+    handlers.stopLoading = stopLoading;
+    handlers.showSnackbar = showSnackbar;
 
     return api;
 };
