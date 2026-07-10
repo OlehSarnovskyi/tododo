@@ -36,6 +36,12 @@ export function markAsTask(api: AxiosInstance): (taskId: ID) => Promise<Response
     };
 }
 
+export function moveTask(api: AxiosInstance): (taskId: ID, date: string) => Promise<void> {
+    return (taskId, date) => {
+        return api.patch(`tasks/move/${taskId}`, { userId: getUserId(), date });
+    };
+}
+
 export function reorderTasks(api: AxiosInstance): (tasks: { _id: ID; order: number }[]) => Promise<void> {
     return (tasks) => {
         return api.patch('tasks/reorder', { tasks });

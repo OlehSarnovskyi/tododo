@@ -34,6 +34,14 @@ export class TasksService {
     return await this.tasksRepository.findOneAndMarkAs({ _id, userId });
   }
 
+  async move(_id: string, userId: number, date: string) {
+    const maxOrder = await this.tasksRepository.getMaxOrder(userId, date);
+    return await this.tasksRepository.findOneAndUpdate(
+      { _id, userId },
+      { $set: { date, order: maxOrder + 1 } },
+    );
+  }
+
   async reorder(tasks: ReorderTaskItemDto[]): Promise<void> {
     await this.tasksRepository.reorder(tasks);
   }

@@ -13,6 +13,7 @@ import { TasksService } from './tasks.service';
 import { TaskDocument } from './models/task.schema';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { ReorderTasksDto } from './dto/reorder-tasks.dto';
+import { MoveTaskDto } from './dto/move-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -33,6 +34,14 @@ export class TasksController {
   @Patch('reorder')
   async reorder(@Body() body: ReorderTasksDto): Promise<void> {
     await this.tasksService.reorder(body.tasks);
+  }
+
+  @Patch('move/:id')
+  async move(
+    @Param('id') id: string,
+    @Body() moveTaskDto: MoveTaskDto,
+  ) {
+    await this.tasksService.move(id, moveTaskDto.userId, moveTaskDto.date);
   }
 
   @Patch('markAs/:id')
