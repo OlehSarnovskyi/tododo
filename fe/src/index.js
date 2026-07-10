@@ -8,11 +8,30 @@ import {SnackbarProvider} from "./services/snackbar.service";
 import {createTheme, ThemeProvider} from "@mui/material";
 import {LoadingProvider} from "./services/loading.service";
 
+// Warm Sand / Taupe — calm, low-saturation palette for focus
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#212121'
-        }
+            main: '#9C6B4F',
+            light: '#C89B7B',
+            dark: '#7E5238',
+            contrastText: '#ffffff'
+        },
+        secondary: {
+            main: '#C89B7B'
+        },
+        background: {
+            default: '#F7F4F0',
+            paper: '#FFFFFF'
+        },
+        text: {
+            primary: '#3B332C',
+            secondary: '#7A6E63'
+        },
+        divider: '#ECE5DD'
+    },
+    shape: {
+        borderRadius: 10
     }
 });
 

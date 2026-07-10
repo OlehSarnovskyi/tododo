@@ -38,7 +38,7 @@ function Calendar({date, setDate}) {
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
             >
-                <IconButton aria-label="previous day" onClick={setPreviousDay}>
+                <IconButton color="primary" aria-label="previous day" onClick={setPreviousDay}>
                     <ArrowBackIosNewIcon/>
                 </IconButton>
                 <MobileDatePicker
@@ -73,7 +73,7 @@ function Calendar({date, setDate}) {
                         }
                     }}
                 />
-                <IconButton aria-label="next day" onClick={setNextDay}>
+                <IconButton color="primary" aria-label="next day" onClick={setNextDay}>
                     <ArrowForwardIosIcon/>
                 </IconButton>
             </div>
