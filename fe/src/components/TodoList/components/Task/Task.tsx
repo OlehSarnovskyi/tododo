@@ -1,6 +1,5 @@
 import "./Task.css";
 import {
-  Checkbox,
   IconButton,
   InputAdornment,
   ListItem,
@@ -14,15 +13,19 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { useRef, useState } from "react";
-import { deleteTask, editTask, getTasksByUserIdAndDate, markAsTask, moveTask } from "../../../../services/tasks.service";
+import { deleteTask, editTask, getTasksByUserIdAndDate, setTaskStatus, moveTask } from "../../../../services/tasks.service";
 import { useApiWithSnackbar } from "../../../../services/api.service";
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import TimelapseIcon from "@mui/icons-material/Timelapse";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { TaskStatus, NEXT_STATUS } from "../../../../models/status";
 
 type TaskOption = "edit" | "delete" | "tomorrow";
 
@@ -49,6 +52,15 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
+
+  const isInProgress = task.status === TaskStatus.IN_PROGRESS;
+  const isDone = task.status === TaskStatus.DONE;
+
+  const statusIcon = isDone
+    ? <CheckCircleIcon color="primary" />
+    : isInProgress
+      ? <TimelapseIcon color="primary" />
+      : <RadioButtonUncheckedIcon sx={{ color: "text.disabled" }} />;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -108,11 +120,17 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
     }
   }
 
-  async function markAs(): Promise<void> {
+  async function changeStatus(): Promise<void> {
     if (isSubmitting.current) return;
     isSubmitting.current = true;
+    const next = NEXT_STATUS[task.status as TaskStatus] ?? TaskStatus.IN_PROGRESS;
+    // Optimistically flip the status so the control reacts instantly.
+    setTasksByUserIdAndDate((prev) =>
+      prev.map((t) => (t._id === task._id ? { ...t, status: next } : t))
+    );
     try {
-      await markAsTask(api)(task._id);
+      await setTaskStatus(api)(task._id, next);
+    } catch {
       const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
       setTasksByUserIdAndDate(tasks);
     } finally {
@@ -162,6 +180,13 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
         />
         : <ListItem
           key={task._id}
+          sx={{
+            borderLeft: "3px solid",
+            borderLeftColor: isInProgress ? "primary.main" : "transparent",
+            bgcolor: isInProgress ? "rgba(156, 107, 79, 0.08)" : "transparent",
+            borderRadius: "8px",
+            transition: "background-color .15s ease, border-color .15s ease",
+          }}
           secondaryAction={
             <IconButton
               aria-label="more"
@@ -214,16 +239,26 @@ function Task({ task, date, setTasksByUserIdAndDate }) {
           >
             <DragIndicatorIcon fontSize="small" />
           </IconButton>
-          <ListItemButton dense>
+          <ListItemButton component="div" dense>
             <ListItemIcon className="task__item-icon">
-              <Checkbox
+              <IconButton
                 edge="start"
                 disableRipple
-                checked={task.status}
-                onClick={markAs}
-              />
+                onClick={changeStatus}
+                aria-label="change status"
+              >
+                {statusIcon}
+              </IconButton>
             </ListItemIcon>
-            <ListItemText className="task__item-text" primary={task.text} />
+            <ListItemText
+              className="task__item-text"
+              primary={task.text}
+              primaryTypographyProps={{
+                sx: isDone
+                  ? { textDecoration: "line-through", color: "text.secondary" }
+                  : undefined,
+              }}
+            />
           </ListItemButton>
         </ListItem>
       }

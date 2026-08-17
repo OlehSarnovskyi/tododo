@@ -1,14 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 
 import { TasksRepository } from './tasks.repository';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskDocument } from './models/task.schema';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { ReorderTaskItemDto } from './dto/reorder-tasks.dto';
+import { StatusEnum } from './models/status.enum';
 
 @Injectable()
-export class TasksService {
+export class TasksService implements OnModuleInit {
   constructor(private readonly tasksRepository: TasksRepository) {}
+
+  async onModuleInit(): Promise<void> {
+    await this.tasksRepository.migrateLegacyStatuses();
+  }
 
   async findAllByUserIdAndDate(query: { userId: number; date: string }): Promise<TaskDocument[]> {
     return await this.tasksRepository.findAllByUserIdAndDate(query);
@@ -30,8 +35,11 @@ export class TasksService {
     return await this.tasksRepository.findOneAndDelete({ _id, userId });
   }
 
-  async markAs(_id: string, userId: number) {
-    return await this.tasksRepository.findOneAndMarkAs({ _id, userId });
+  async setStatus(_id: string, userId: number, status: StatusEnum) {
+    return await this.tasksRepository.findOneAndUpdate(
+      { _id, userId },
+      { $set: { status } },
+    );
   }
 
   async move(_id: string, userId: number, date: string) {

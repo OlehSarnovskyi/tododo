@@ -44,18 +44,16 @@ export class TasksRepository {
     return this.model.findOneAndDelete(filterQuery, { lean: true }) as unknown as TDocument;
   }
 
-  async findOneAndMarkAs<TDocument>(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
-    const document = await this.model.findOneAndUpdate(
-      filterQuery,
-      [{ $set: { status: { $eq: [false, '$status'] } } }],
-      { lean: true, new: true },
-    );
-
-    if (!document) {
-      throw new NotFoundException('Document not found.');
-    }
-
-    return document as TDocument;
+  // One-time, idempotent migration of legacy status values to the string enum.
+  // Old data stored status as a boolean (true = done, false = active); some
+  // very old rows may be numeric (1 = done, 0 = active).
+  async migrateLegacyStatuses(): Promise<void> {
+    await this.model.updateMany({ status: { $type: 'bool' } }, [
+      { $set: { status: { $cond: ['$status', 'done', 'todo'] } } },
+    ]);
+    await this.model.updateMany({ status: { $type: 'number' } }, [
+      { $set: { status: { $cond: [{ $gte: ['$status', 1] }, 'done', 'todo'] } } },
+    ]);
   }
 
   async reorder(updates: { _id: string; order: number }[]): Promise<void> {

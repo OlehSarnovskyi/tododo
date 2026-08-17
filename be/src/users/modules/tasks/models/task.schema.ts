@@ -12,8 +12,8 @@ export class TaskDocument extends AbstractDocument {
   @Prop({ required: true })
   text: string
 
-  @Prop({ required: true, default: StatusEnum.ACTIVE })
-  status: boolean
+  @Prop({ required: true, enum: StatusEnum, default: StatusEnum.TODO })
+  status: StatusEnum
 
   @Prop({ required: true, default: 0 })
   order: number

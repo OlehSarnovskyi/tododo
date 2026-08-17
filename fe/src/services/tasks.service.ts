@@ -30,9 +30,9 @@ export function editTask(api: AxiosInstance): (task: Pick<List.Task, '_id' | 'te
     };
 }
 
-export function markAsTask(api: AxiosInstance): (taskId: ID) => Promise<Response> {
-    return (taskId) => {
-        return api.patch(`tasks/markAs/${taskId}`, { userId: getUserId() });
+export function setTaskStatus(api: AxiosInstance): (taskId: ID, status: string) => Promise<Response> {
+    return (taskId, status) => {
+        return api.patch(`tasks/status/${taskId}`, { userId: getUserId(), status });
     };
 }
 

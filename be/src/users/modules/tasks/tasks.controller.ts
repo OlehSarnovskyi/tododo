@@ -14,6 +14,7 @@ import { TaskDocument } from './models/task.schema';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { ReorderTasksDto } from './dto/reorder-tasks.dto';
 import { MoveTaskDto } from './dto/move-task.dto';
+import { UpdateStatusDto } from './dto/update-status.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -44,12 +45,12 @@ export class TasksController {
     await this.tasksService.move(id, moveTaskDto.userId, moveTaskDto.date);
   }
 
-  @Patch('markAs/:id')
-  async markAs(
+  @Patch('status/:id')
+  async setStatus(
     @Param('id') id: string,
-    @Body('userId') userId: number,
+    @Body() dto: UpdateStatusDto,
   ) {
-    await this.tasksService.markAs(id, +userId);
+    await this.tasksService.setStatus(id, dto.userId, dto.status);
   }
 
   @Patch(':id')
