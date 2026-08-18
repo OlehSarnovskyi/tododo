@@ -1,56 +1,60 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 import { TasksRepository } from './tasks.repository';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskDocument } from './models/task.schema';
-import { UpdateTaskDto } from './dto/update-task.dto';
 import { ReorderTaskItemDto } from './dto/reorder-tasks.dto';
 import { StatusEnum } from './models/status.enum';
 
 @Injectable()
 export class TasksService implements OnModuleInit {
+  private readonly logger = new Logger(TasksService.name);
+
   constructor(private readonly tasksRepository: TasksRepository) {}
 
   async onModuleInit(): Promise<void> {
-    await this.tasksRepository.migrateLegacyStatuses();
+    try {
+      await this.tasksRepository.migrateLegacyStatuses();
+      await this.tasksRepository.encryptLegacyTexts();
+    } catch (error) {
+      // A failed migration must not stop the app from serving requests.
+      this.logger.error(`Startup migration failed: ${error.message}`);
+    }
   }
 
-  async findAllByUserIdAndDate(query: { userId: number; date: string }): Promise<TaskDocument[]> {
-    return await this.tasksRepository.findAllByUserIdAndDate(query);
+  async findAllByUserIdAndDate(userId: number, date: string): Promise<TaskDocument[]> {
+    return this.tasksRepository.findAllByUserIdAndDate({ userId, date });
   }
 
-  async create(createTaskDto: CreateTaskDto) {
-    const maxOrder = await this.tasksRepository.getMaxOrder(createTaskDto.userId, createTaskDto.date);
-    return await this.tasksRepository.create({ ...createTaskDto, order: maxOrder + 1 });
+  async create(userId: number, createTaskDto: CreateTaskDto): Promise<TaskDocument> {
+    const maxOrder = await this.tasksRepository.getMaxOrder(userId, createTaskDto.date);
+
+    return this.tasksRepository.create({
+      ...createTaskDto,
+      userId,
+      order: maxOrder + 1,
+    });
   }
 
-  async update(_id: string, userId: number, updateTaskDto: UpdateTaskDto) {
-    return await this.tasksRepository.findOneAndUpdate(
-      { _id, userId },
-      { $set: updateTaskDto },
-    );
+  async rename(_id: string, userId: number, text: string): Promise<TaskDocument> {
+    return this.tasksRepository.updateText({ _id, userId }, text);
   }
 
-  async remove(_id: string, userId: number) {
-    return await this.tasksRepository.findOneAndDelete({ _id, userId });
+  async setStatus(_id: string, userId: number, status: StatusEnum): Promise<TaskDocument> {
+    return this.tasksRepository.updateStatus({ _id, userId }, status);
   }
 
-  async setStatus(_id: string, userId: number, status: StatusEnum) {
-    return await this.tasksRepository.findOneAndUpdate(
-      { _id, userId },
-      { $set: { status } },
-    );
-  }
-
-  async move(_id: string, userId: number, date: string) {
+  async move(_id: string, userId: number, date: string): Promise<TaskDocument> {
     const maxOrder = await this.tasksRepository.getMaxOrder(userId, date);
-    return await this.tasksRepository.findOneAndUpdate(
-      { _id, userId },
-      { $set: { date, order: maxOrder + 1 } },
-    );
+
+    return this.tasksRepository.moveToDate({ _id, userId }, date, maxOrder + 1);
   }
 
-  async reorder(tasks: ReorderTaskItemDto[]): Promise<void> {
-    await this.tasksRepository.reorder(tasks);
+  async remove(_id: string, userId: number): Promise<void> {
+    await this.tasksRepository.deleteOne({ _id, userId });
+  }
+
+  async reorder(userId: number, tasks: ReorderTaskItemDto[]): Promise<void> {
+    await this.tasksRepository.reorder(userId, tasks);
   }
 }

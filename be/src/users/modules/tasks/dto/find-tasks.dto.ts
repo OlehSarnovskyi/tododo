@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class MoveTaskDto {
+export class FindTasksDto {
   @IsString()
   @IsNotEmpty()
   date: string;

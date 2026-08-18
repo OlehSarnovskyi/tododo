@@ -10,11 +10,10 @@ import {
   MenuItem,
   TextField
 } from "@mui/material";
+import { useState } from "react";
+import { Dayjs } from "dayjs";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import { useRef, useState } from "react";
-import { deleteTask, editTask, getTasksByUserIdAndDate, setTaskStatus, moveTask } from "../../../../services/tasks.service";
-import { useApiWithSnackbar } from "../../../../services/api.service";
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
@@ -25,243 +24,178 @@ import TimelapseIcon from "@mui/icons-material/Timelapse";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { TaskStatus, NEXT_STATUS } from "../../../../models/status";
 
-type TaskOption = "edit" | "delete" | "tomorrow";
+import { useApiWithSnackbar } from "../../../../services/api.service";
+import { List } from "../../../../models/list";
+import { TaskStatus } from "../../../../models/status";
+import { useTaskActions } from "./useTaskActions";
 
-const OPTIONS: { title: string; value: TaskOption }[] = [
-  { title: "Edit", value: "edit" },
-  { title: "Tomorrow", value: "tomorrow" },
-  { title: "Delete", value: "delete" },
+type TaskOption = "edit" | "tomorrow" | "delete";
+
+const OPTIONS: { title: string; value: TaskOption; icon: JSX.Element }[] = [
+  { title: "Edit", value: "edit", icon: <EditIcon fontSize="small" /> },
+  { title: "Tomorrow", value: "tomorrow", icon: <ArrowForwardIcon fontSize="small" /> },
+  { title: "Delete", value: "delete", icon: <DeleteIcon fontSize="small" /> },
 ];
 
-const ITEM_HEIGHT = 48;
+const STATUS_ICON: Record<TaskStatus, JSX.Element> = {
+  [TaskStatus.TODO]: <RadioButtonUncheckedIcon sx={{ color: "text.disabled" }} />,
+  [TaskStatus.IN_PROGRESS]: <TimelapseIcon color="primary" />,
+  [TaskStatus.DONE]: <CheckCircleIcon color="primary" />,
+};
 
-function Task({ task, date, setTasksByUserIdAndDate }) {
+const MENU_MAX_HEIGHT = 48 * 4.5;
+
+interface Props {
+  task: List.Task;
+  date: Dayjs;
+  setTasksByUserIdAndDate: (update: (previous: List.Task[]) => List.Task[]) => void;
+}
+
+function Task({ task, date, setTasksByUserIdAndDate }: Props) {
   const api = useApiWithSnackbar();
-  const isSubmitting = useRef(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isEditMode, setEditMode] = useState<boolean>(false);
-  const [inputText, setInputText] = useState<string>(task.text);
-  const open = Boolean(anchorEl);
+  const [isEditMode, setEditMode] = useState(false);
+  const [inputText, setInputText] = useState(task.text);
+  const isMenuOpen = Boolean(anchorEl);
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task._id });
+  const actions = useTaskActions({ api, task, date, setTasks: setTasksByUserIdAndDate });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: task._id });
 
   const isInProgress = task.status === TaskStatus.IN_PROGRESS;
   const isDone = task.status === TaskStatus.DONE;
+  const hasText = inputText.trim().length > 0;
 
-  const statusIcon = isDone
-    ? <CheckCircleIcon color="primary" />
-    : isInProgress
-      ? <TimelapseIcon color="primary" />
-      : <RadioButtonUncheckedIcon sx={{ color: "text.disabled" }} />;
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  function handleClose(option: TaskOption): void {
+  function selectOption(option: TaskOption): void {
     setAnchorEl(null);
-    if (option === "delete") {
-      deleteT();
-    } else if (option === "edit") {
-      setEditMode(true);
-    } else if (option === "tomorrow") {
-      moveToTomorrow();
+
+    if (option === "edit") setEditMode(true);
+    if (option === "tomorrow") actions.moveToTomorrow();
+    if (option === "delete") actions.remove();
+  }
+
+  async function rename(text: string): Promise<void> {
+    if (await actions.rename(text)) {
+      setEditMode(false);
     }
   }
 
-  function closeMenu(e: React.SyntheticEvent): void {
-    e.stopPropagation();
-    setAnchorEl(null);
-  }
+  function renameByEnter(event: React.KeyboardEvent<HTMLDivElement>): void {
+    const text = (event.target as HTMLInputElement).value;
+    setInputText(text);
 
-  function closeMenuAndEditMode(): void {
-    setAnchorEl(null);
-    setEditMode(false);
-  }
-
-  async function deleteT(): Promise<void> {
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
-    try {
-      await deleteTask(api)(task._id);
-      const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
-      setTasksByUserIdAndDate(tasks);
-    } finally {
-      isSubmitting.current = false;
+    if (event.key === "Enter" && text.trim().length) {
+      rename(text);
     }
   }
 
-  function editByEnter(e: React.KeyboardEvent<HTMLDivElement>): void {
-    const currentText = (e.target as HTMLInputElement).value;
-    setInputText(currentText);
-    if (e.key === "Enter" && currentText.trim().length) {
-      edit(currentText);
-    }
-  }
-
-  async function edit(text: string): Promise<void> {
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
-    try {
-      await editTask(api)({ _id: task._id, text });
-      const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
-      setTasksByUserIdAndDate(tasks);
-      closeMenuAndEditMode();
-    } finally {
-      isSubmitting.current = false;
-    }
-  }
-
-  async function changeStatus(): Promise<void> {
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
-    const next = NEXT_STATUS[task.status as TaskStatus] ?? TaskStatus.IN_PROGRESS;
-    // Optimistically flip the status so the control reacts instantly.
-    setTasksByUserIdAndDate((prev) =>
-      prev.map((t) => (t._id === task._id ? { ...t, status: next } : t))
+  if (isEditMode) {
+    return (
+      <TextField
+        autoFocus
+        sx={{ width: "100%" }}
+        variant="outlined"
+        defaultValue={task.text}
+        onKeyUp={renameByEnter}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label={hasText ? "save task" : "cancel editing"}
+                onClick={() => (hasText ? rename(inputText) : setEditMode(false))}
+              >
+                {hasText ? <DoneIcon /> : <CloseIcon />}
+              </IconButton>
+            </InputAdornment>
+          )
+        }}
+      />
     );
-    try {
-      await setTaskStatus(api)(task._id, next);
-    } catch {
-      const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
-      setTasksByUserIdAndDate(tasks);
-    } finally {
-      isSubmitting.current = false;
-    }
-  }
-
-  async function moveToTomorrow(): Promise<void> {
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
-    const nextDate = date.add(1, "day").format("DD.MM.YYYY");
-    // Optimistically remove the task from the current day — no full refetch,
-    // so the calendar/list don't flash while the request is in flight.
-    setTasksByUserIdAndDate((prev) => prev.filter((t) => t._id !== task._id));
-    try {
-      await moveTask(api)(task._id, nextDate);
-    } catch {
-      // Request failed — restore the day from the server
-      const tasks = await getTasksByUserIdAndDate(api)(date.format("DD.MM.YYYY"));
-      setTasksByUserIdAndDate(tasks);
-    } finally {
-      isSubmitting.current = false;
-    }
   }
 
   return (
-    <div ref={setNodeRef} style={style}>
-      {isEditMode
-        ? <TextField
-          autoFocus
-          sx={{ width: "100%" }}
-          variant="outlined"
-          defaultValue={task.text}
-          onKeyUp={(e) => editByEnter(e)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={inputText.trim().length
-                  ? () => edit(inputText)
-                  : closeMenuAndEditMode
-                }>
-                  {inputText.trim().length ? <DoneIcon /> : <CloseIcon />}
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-        />
-        : <ListItem
-          key={task._id}
-          sx={{
-            borderLeft: "3px solid",
-            borderLeftColor: isInProgress ? "primary.main" : "transparent",
-            bgcolor: isInProgress ? "rgba(156, 107, 79, 0.08)" : "transparent",
-            borderRadius: "8px",
-            transition: "background-color .15s ease, border-color .15s ease",
-          }}
-          secondaryAction={
-            <IconButton
-              aria-label="more"
-              id="long-button"
-              aria-controls={open ? "long-menu" : undefined}
-              aria-expanded={open ? "true" : undefined}
-              aria-haspopup="true"
-              onClick={handleClick}
-            >
-              <MoreVertIcon />
-              <Menu
-                id="long-menu"
-                MenuListProps={{ "aria-labelledby": "long-button" }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={closeMenu}
-                anchorOrigin={{ vertical: "top", horizontal: "left" }}
-                transformOrigin={{ vertical: "top", horizontal: "left" }}
-                slotProps={{
-                  paper: {
-                    style: { maxHeight: ITEM_HEIGHT * 4.5, minWidth: 168 }
-                  }
-                }}
-              >
-                {OPTIONS.map((option) => (
-                  <MenuItem
-                    key={option.value}
-                    onClick={() => handleClose(option.value)}
-                    sx={{ fontSize: "14px" }}
-                  >
-                    <ListItemIcon>
-                      {option.value === "edit" && <EditIcon fontSize="small" />}
-                      {option.value === "tomorrow" && <ArrowForwardIcon fontSize="small" />}
-                      {option.value === "delete" && <DeleteIcon fontSize="small" />}
-                    </ListItemIcon>
-                    {option.title}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </IconButton>
-          }
-          disablePadding
-        >
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+      }}
+    >
+      <ListItem
+        sx={{
+          borderLeft: "3px solid",
+          borderLeftColor: isInProgress ? "primary.main" : "transparent",
+          bgcolor: isInProgress ? "rgba(156, 107, 79, 0.08)" : "transparent",
+          borderRadius: "8px",
+          transition: "background-color .15s ease, border-color .15s ease",
+        }}
+        secondaryAction={
           <IconButton
-            {...attributes}
-            {...listeners}
-            size="small"
-            sx={{ cursor: "grab", color: "text.disabled", ml: 0.5, touchAction: "none" }}
-            aria-label="drag to reorder"
+            aria-label="task actions"
+            aria-haspopup="true"
+            aria-expanded={isMenuOpen ? "true" : undefined}
+            onClick={(event) => setAnchorEl(event.currentTarget)}
           >
-            <DragIndicatorIcon fontSize="small" />
+            <MoreVertIcon />
           </IconButton>
-          <ListItemButton component="div" dense>
-            <ListItemIcon className="task__item-icon">
-              <IconButton
-                edge="start"
-                disableRipple
-                onClick={changeStatus}
-                aria-label="change status"
-              >
-                {statusIcon}
-              </IconButton>
-            </ListItemIcon>
-            <ListItemText
-              className="task__item-text"
-              primary={task.text}
-              primaryTypographyProps={{
-                sx: isDone
-                  ? { textDecoration: "line-through", color: "text.secondary" }
-                  : undefined,
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
-      }
+        }
+        disablePadding
+      >
+        <IconButton
+          {...attributes}
+          {...listeners}
+          size="small"
+          sx={{ cursor: "grab", color: "text.disabled", ml: 0.5, touchAction: "none" }}
+          aria-label="drag to reorder"
+        >
+          <DragIndicatorIcon fontSize="small" />
+        </IconButton>
+
+        <ListItemButton component="div" dense>
+          <ListItemIcon className="task__item-icon">
+            <IconButton
+              edge="start"
+              disableRipple
+              onClick={actions.cycleStatus}
+              aria-label="change status"
+            >
+              {STATUS_ICON[task.status] ?? STATUS_ICON[TaskStatus.TODO]}
+            </IconButton>
+          </ListItemIcon>
+          <ListItemText
+            className="task__item-text"
+            primary={task.text}
+            primaryTypographyProps={{
+              sx: isDone
+                ? { textDecoration: "line-through", color: "text.secondary" }
+                : undefined,
+            }}
+          />
+        </ListItemButton>
+      </ListItem>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={isMenuOpen}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "left" }}
+        slotProps={{ paper: { style: { maxHeight: MENU_MAX_HEIGHT, minWidth: 168 } } }}
+      >
+        {OPTIONS.map((option) => (
+          <MenuItem
+            key={option.value}
+            onClick={() => selectOption(option.value)}
+            sx={{ fontSize: "14px" }}
+          >
+            <ListItemIcon>{option.icon}</ListItemIcon>
+            {option.title}
+          </MenuItem>
+        ))}
+      </Menu>
     </div>
   );
 }

@@ -1,17 +1,25 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsInt,
+  IsMongoId,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 export class ReorderTaskItemDto {
-  @IsString()
-  @IsNotEmpty()
+  @IsMongoId()
   _id: string;
 
-  @IsNumber()
+  @IsInt()
+  @Min(0)
   order: number;
 }
 
 export class ReorderTasksDto {
   @IsArray()
+  @ArrayNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => ReorderTaskItemDto)
   tasks: ReorderTaskItemDto[];

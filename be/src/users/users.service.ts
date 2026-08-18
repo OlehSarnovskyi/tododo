@@ -1,55 +1,34 @@
-import * as crypto from 'crypto';
-import {Injectable, UnauthorizedException, UnprocessableEntityException} from '@nestjs/common'
-import {ConfigService} from '@nestjs/config'
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
-import {UsersRepository} from './users.repository'
-import {CreateUserDto} from './dto/create-user.dto'
+import { UsersRepository } from './users.repository';
+import { TelegramUser } from '../shared/telegram-auth.service';
 
 @Injectable()
-export class UsersService {
-    constructor(
-        private readonly usersRepository: UsersRepository,
-        private readonly configService: ConfigService,
-    ) {}
+export class UsersService implements OnModuleInit {
+    private readonly logger = new Logger(UsersService.name);
 
-    async login(userDto: CreateUserDto): Promise<string> {
-        this.verifyTelegramInitData(userDto.initData);
-        const exists = await this.validateLogin(userDto.id);
-        if (!exists) {
-            await this.usersRepository.create(userDto);
-            return 'Welcome to Tododo!';
-        }
-    }
+    constructor(private readonly usersRepository: UsersRepository) {}
 
-    private verifyTelegramInitData(initData: string): void {
-        const botToken = this.configService.get<string>('BOT_TOKEN');
-        const params = new URLSearchParams(initData);
-        const hash = params.get('hash');
-        if (!hash) throw new UnauthorizedException('Missing hash');
-        params.delete('hash');
-
-        const dataCheckString = Array.from(params.entries())
-            .sort(([a], [b]) => a.localeCompare(b))
-            .map(([key, value]) => `${key}=${value}`)
-            .join('\n');
-
-        const secretKey = crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
-        const expectedHash = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
-
-        if (expectedHash !== hash) {
-            throw new UnauthorizedException('Invalid Telegram initData');
-        }
-    }
-
-    private async validateLogin(id: number) {
+    async onModuleInit(): Promise<void> {
         try {
-            await this.usersRepository.findOne(id);
-            return true;
+            await this.usersRepository.encryptLegacyProfiles();
         } catch (error) {
-            if (error.status && error.status !== 404) {
-                throw new UnprocessableEntityException('');
-            }
+            // A failed migration must not stop the app from serving requests.
+            this.logger.error(`Profile encryption migration failed: ${error.message}`);
         }
-        return false;
+    }
+
+    /**
+     * Registers a first-time visitor. The profile comes from initData that the
+     * guard already verified, so it is trusted here.
+     */
+    async login(user: TelegramUser): Promise<{ created: boolean }> {
+        if (await this.usersRepository.exists(user.id)) {
+            return { created: false };
+        }
+
+        await this.usersRepository.create(user);
+
+        return { created: true };
     }
 }

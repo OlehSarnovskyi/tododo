@@ -1,12 +1,7 @@
 import "./todo-list.css";
-import CreateNew from "./components/CreateNew";
-import Task from './components/Task/Task';
-import { useState } from "react";
-import { List } from "@mui/material";
-import { addNewTask, getTasksByUserIdAndDate, reorderTasks } from "../../services/tasks.service";
-import { useApiWithSnackbar } from "../../services/api.service";
-import dayjs from "dayjs";
-import { useLoading } from "../../services/loading.service";
+import { Dispatch, SetStateAction, useState } from "react";
+import { List as MuiList } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
 import {
   DndContext,
   closestCenter,
@@ -18,42 +13,51 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 
-function TodoList({ date, tasks, setTasksByUserIdAndDate }) {
+import CreateNew from "./components/CreateNew";
+import Task from "./components/Task/Task";
+import { addNewTask, getTasksByUserIdAndDate, reorderTasks } from "../../services/tasks.service";
+import { useApiWithSnackbar } from "../../services/api.service";
+import { useLoading } from "../../services/loading.service";
+import { List } from "../../models/list";
+import { DATE_FORMAT } from "../../constants";
+
+interface Props {
+  date: Dayjs;
+  tasks: List.Task[];
+  setTasksByUserIdAndDate: Dispatch<SetStateAction<List.Task[]>>;
+}
+
+function TodoList({ date, tasks, setTasksByUserIdAndDate }: Props) {
   const api = useApiWithSnackbar();
   const [isAddingNewTask, setIsAddingNewTask] = useState(false);
   const { isLoading } = useLoading();
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    // A short hold distinguishes dragging from scrolling on touch screens.
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
   );
 
-  function addTask(text: string): void {
-    addNewTask(api)({ date: date.format('DD.MM.YYYY'), text }).then(() => {
-      getTasksByUserIdAndDate(api)(date.format('DD.MM.YYYY')).then(fetched => {
-        setTasksByUserIdAndDate(fetched);
-      });
-    });
+  async function addTask(text: string): Promise<void> {
+    const formattedDate = date.format(DATE_FORMAT);
+    await addNewTask(api)({ date: formattedDate, text });
+    setTasksByUserIdAndDate(await getTasksByUserIdAndDate(api)(formattedDate));
   }
 
-  function isToday(): boolean {
-    return dayjs(date).isSame(dayjs(), 'day');
-  }
-
-  function handleDragEnd(event: DragEndEvent): void {
-    const { active, over } = event;
+  function handleDragEnd({ active, over }: DragEndEvent): void {
     if (!over || active.id === over.id) return;
 
-    const oldIndex = tasks.findIndex(t => t._id === active.id);
-    const newIndex = tasks.findIndex(t => t._id === over.id);
-    const reordered = arrayMove(tasks, oldIndex, newIndex);
+    const oldIndex = tasks.findIndex((task) => task._id === active.id);
+    const newIndex = tasks.findIndex((task) => task._id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
 
+    const reordered = arrayMove(tasks, oldIndex, newIndex);
     setTasksByUserIdAndDate(reordered);
 
-    reorderTasks(api)(
-      reordered.map((t, index) => ({ _id: t._id, order: index }))
-    );
+    reorderTasks(api)(reordered.map((task, index) => ({ _id: task._id, order: index })));
   }
+
+  const isToday = dayjs(date).isSame(dayjs(), "day");
 
   return (
     <div className="todo-list">
@@ -65,22 +69,29 @@ function TodoList({ date, tasks, setTasksByUserIdAndDate }) {
       />
       <hr />
       <div className="todo-list-tasks">
-        {tasks.length > 0 &&
+        {tasks.length > 0 ? (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={tasks.map(t => t._id)} strategy={verticalListSortingStrategy}>
-              <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                {tasks.map(task => (
-                  <Task key={task._id} task={task} date={date} setTasksByUserIdAndDate={setTasksByUserIdAndDate} />
+            <SortableContext
+              items={tasks.map((task) => task._id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <MuiList sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+                {tasks.map((task) => (
+                  <Task
+                    key={task._id}
+                    task={task}
+                    date={date}
+                    setTasksByUserIdAndDate={setTasksByUserIdAndDate}
+                  />
                 ))}
-              </List>
+              </MuiList>
             </SortableContext>
           </DndContext>
-        }
-        {tasks.length === 0 &&
+        ) : (
           <p className="todo-list-no-tasks">
-            {isLoading ? 'Loading' : `No tasks for ${isToday() ? 'today' : 'this day'}`}
+            {isLoading ? "Loading" : `No tasks for ${isToday ? "today" : "this day"}`}
           </p>
-        }
+        )}
       </div>
     </div>
   );

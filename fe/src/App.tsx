@@ -18,11 +18,11 @@ function App() {
 
     useEffect(() => {
         if (Telegram.WebApp.initDataUnsafe.user) {
-            login(api).then((message) => {
-                if (message) {
+            login(api).then(({created}) => {
+                if (created) {
                     setSnackbar({
                         open: true,
-                        message
+                        message: 'Welcome to Tododo!'
                     })
                 }
             })

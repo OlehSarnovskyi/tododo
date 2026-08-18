@@ -20,6 +20,9 @@ const handlers = {
 api.interceptors.request.use(
     (config) => {
         handlers.startLoading();
+        // Signed Telegram launch data — the backend derives the user from it,
+        // so identity is never taken from the request payload.
+        config.headers.Authorization = `tma ${Telegram.WebApp.initData}`;
         return config;
     },
     (error) => {

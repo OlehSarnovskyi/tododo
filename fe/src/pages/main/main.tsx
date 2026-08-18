@@ -8,6 +8,8 @@ import {Link, LinkProps} from "react-router-dom";
 import {BottomNavigation, BottomNavigationAction, Paper} from "@mui/material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PolicyIcon from '@mui/icons-material/Policy';
+import {List} from "../../models/list";
+import {DATE_FORMAT} from "../../constants";
 
 const LinkBehavior = forwardRef<any, Omit<LinkProps, 'to'>>(
     (props, ref) => <Link ref={ref} to="/" {...props} role={undefined} />
@@ -16,14 +18,10 @@ const LinkBehavior = forwardRef<any, Omit<LinkProps, 'to'>>(
 function Main() {
     const api = useApiWithSnackbar()
     const [date, setDate] = useState(dayjs())
-    const [tasksByUserIdAndDate, setTasksByUserIdAndDate] = useState([])
+    const [tasksByUserIdAndDate, setTasksByUserIdAndDate] = useState<List.Task[]>([])
 
-    // TODO: call in App
     useEffect(() => {
-        const formattedDate = dayjs(date).format('DD.MM.YYYY')
-        getTasksByUserIdAndDate(api)(formattedDate).then(tasks => {
-            setTasksByUserIdAndDate(tasks)
-        })
+        getTasksByUserIdAndDate(api)(dayjs(date).format(DATE_FORMAT)).then(setTasksByUserIdAndDate)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [date])
 
