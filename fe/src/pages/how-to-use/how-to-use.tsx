@@ -7,44 +7,52 @@ function HowToUse() {
     return (
         <div className="how-to-use">
             <Link onClick={() => navigate('/')}>Go back</Link>
-            <h1>How to Use TODODO</h1>
-            <b>Welcome to TODODO! 🎉</b>
-            <p>Managing your daily tasks has never been this simple or convenient — <b>all within Telegram!</b></p>
-            <p>📱 Follow these simple tips to start managing your days:</p>
-            <h2>1. Open it easily</h2>
+            <h1>How to use TODODO</h1>
+            <p>One list per day, right inside Telegram. Here is everything the app can do.</p>
+
+            <h2>Opening it</h2>
             <ul>
-                <li>Open Telegram and search for the <b>TODODO bot</b>.</li>
-                <li>Click <b>“Open”</b> (from the chat preview) or <b>“Launch”</b> (in the bot) to access the app.</li>
-                <li>For quicker access, add TODODO to your phone's home screen by selecting the <b>3-dot menu option</b> in the app.</li>
+                <li>Launch TODODO from the bot chat — it opens instantly, nothing to install.</li>
+                <li>Your account is created on first launch from your Telegram profile. There is no password to remember.</li>
+                <li>To keep it one tap away, add it to your home screen from the app's 3-dot menu.</li>
             </ul>
             <hr/>
-            <h2>2. No need to create an account and login manually</h2>
+
+            <h2>Adding and editing tasks</h2>
             <ul>
-                <li><b>Automatic Account Creation:</b> The first time you open TODODO, your account is created instantly using your Telegram data—no manual registration required.</li>
-                <li><b>Seamless Login:</b> On future visits, you’ll log in automatically.</li>
+                <li><b>Add:</b> tap <b>+ NEW TASK</b>, type, and press Enter.</li>
+                <li><b>Edit or delete:</b> open the <b>⋮</b> menu next to a task.</li>
+                <li><b>Reorder:</b> drag a task by the handle on the left to set your priorities. The order is saved.</li>
             </ul>
             <hr/>
-            <h2>3. Manage Your Task List</h2>
+
+            <h2>Tracking what you are working on</h2>
+            <p>Tap the circle next to a task to move it through three states:</p>
             <ul>
-                <li><b>Create Tasks:</b> Tap the <b>"+ NEW TASK"</b> button to add tasks effortlessly.</li>
-                <li><b>Edit or Delete Tasks:</b> Use the <b>3-dot menu</b> next to a task to make changes or remove it.</li>
-                <li><b>Mark Tasks as Done:</b> Simply check the boxes to track completed tasks.</li>
+                <li><b>To do</b> — an empty circle. Not started yet.</li>
+                <li><b>In progress</b> — a half-filled circle. The task is highlighted so you can see at a glance what you picked up today.</li>
+                <li><b>Done</b> — a check. The task is crossed out.</li>
+            </ul>
+            <p>Tapping again cycles back to the start, so nothing is ever stuck in the wrong state.</p>
+            <hr/>
+
+            <h2>Moving between days</h2>
+            <ul>
+                <li>Use the arrows, or swipe left and right across the date.</li>
+                <li>Tap the date to jump to any day in the calendar.</li>
+                <li><b>Didn't get to it?</b> Choose <b>Tomorrow</b> in the <b>⋮</b> menu and the task moves to the next day.</li>
             </ul>
             <hr/>
-            <h2>4. Navigate Your Schedule with the Calendar</h2>
+
+            <h2>Your privacy</h2>
             <ul>
-                <li><b>Switch Between Days:</b> Use the left and right arrows in the calendar to move between dates.</li>
-                <li><b>Quick Navigation:</b> Click on the calendar to open a popup for selecting specific dates more efficiently.</li>
+                <li>Task text is <b>encrypted before it is stored</b>, so it is unreadable in the database.</li>
+                <li>Every request is verified against Telegram's signature — nobody can read or change your list by pretending to be you.</li>
             </ul>
             <hr/>
-            <p>
-                <h3>Need Help or Have Suggestions?</h3>
-                <span>We’re here to assist! Reach out to:</span>
-                <br/>
-                <b>Admin:</b> <a href="https://t.me/oleh_srn">@oleh_srn</a>
-            </p>
-            <hr/>
-            <i><b>Thank you for choosing TODODO!</b> 🌟 We’re excited to help you stay organized and conquer your day!</i>
+
+            <h3>Questions or ideas?</h3>
+            <p>Write to <a href="https://t.me/oleh_srn">@oleh_srn</a> — feedback genuinely shapes what gets built next.</p>
         </div>
     )
 }
