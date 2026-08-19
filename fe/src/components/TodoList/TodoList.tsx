@@ -20,7 +20,7 @@ import { addNewTask, getTasksByUserIdAndDate, reorderTasks } from "../../service
 import { useApiWithSnackbar } from "../../services/api.service";
 import { useLoading } from "../../services/loading.service";
 import { List } from "../../models/list";
-import { DATE_FORMAT } from "../../constants";
+import { DATE_FORMAT, MAX_TASKS_PER_DAY } from "../../constants";
 
 interface Props {
   date: Dayjs;
@@ -62,12 +62,18 @@ function TodoList({ date, tasks, setTasksByUserIdAndDate }: Props) {
 
   return (
     <div className="todo-list">
-      <CreateNew
-        instance="Task"
-        setIsAddingNew={setIsAddingNewTask}
-        isAddingNew={isAddingNewTask}
-        addNew={addTask}
-      />
+      {tasks.length < MAX_TASKS_PER_DAY ? (
+        <CreateNew
+          instance="Task"
+          setIsAddingNew={setIsAddingNewTask}
+          isAddingNew={isAddingNewTask}
+          addNew={addTask}
+        />
+      ) : (
+        <p className="todo-list-day-full">
+          This day is full — {MAX_TASKS_PER_DAY} tasks is the maximum.
+        </p>
+      )}
       <hr />
       <DayProgress tasks={tasks} />
       <div className="todo-list-tasks">

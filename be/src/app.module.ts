@@ -1,6 +1,7 @@
 import {Module} from '@nestjs/common'
-import {ConfigModule} from '@nestjs/config';
+import {ConfigModule, ConfigService} from '@nestjs/config';
 import {APP_GUARD} from '@nestjs/core';
+import {ThrottlerGuard, ThrottlerModule} from '@nestjs/throttler';
 import * as Joi from 'joi'
 
 import {UsersModule} from './users/users.module';
@@ -25,7 +26,16 @@ import {TelegramAuthGuard} from './shared/telegram-auth.guard';
                 // How long a Telegram launch stays valid — limits replay of
                 // captured initData. Defaults to 24h.
                 INIT_DATA_MAX_AGE_SECONDS: Joi.number().default(86400),
+                THROTTLE_TTL_SECONDS: Joi.number().default(60),
+                THROTTLE_LIMIT: Joi.number().default(60),
             })
+        }),
+        ThrottlerModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => ([{
+                ttl: config.get<number>('THROTTLE_TTL_SECONDS') * 1000,
+                limit: config.get<number>('THROTTLE_LIMIT'),
+            }]),
         }),
         CryptoModule,
         TelegramAuthModule,
@@ -33,6 +43,9 @@ import {TelegramAuthGuard} from './shared/telegram-auth.guard';
         UsersModule
     ],
     providers: [
+        // Order matters: throttle first, so a flood of unauthenticated requests
+        // is rejected by rate limit rather than sailing past it into a 401.
+        { provide: APP_GUARD, useClass: ThrottlerGuard },
         // Every request must carry verified Telegram initData.
         { provide: APP_GUARD, useClass: TelegramAuthGuard },
     ]

@@ -1,10 +1,13 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 import { TasksRepository } from './tasks.repository';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskDocument } from './models/task.schema';
 import { ReorderTaskItemDto } from './dto/reorder-tasks.dto';
 import { StatusEnum } from './models/status.enum';
+
+/** Keeps a day list short enough to stay useful, and caps abuse per day. */
+export const MAX_TASKS_PER_DAY = 20;
 
 @Injectable()
 export class TasksService implements OnModuleInit {
@@ -27,6 +30,8 @@ export class TasksService implements OnModuleInit {
   }
 
   async create(userId: number, createTaskDto: CreateTaskDto): Promise<TaskDocument> {
+    await this.assertDayHasRoom(userId, createTaskDto.date);
+
     const maxOrder = await this.tasksRepository.getMaxOrder(userId, createTaskDto.date);
 
     return this.tasksRepository.create({
@@ -45,6 +50,10 @@ export class TasksService implements OnModuleInit {
   }
 
   async move(_id: string, userId: number, date: string): Promise<TaskDocument> {
+    // Checked here too, otherwise the cap could be walked around by moving
+    // tasks onto an already full day.
+    await this.assertDayHasRoom(userId, date);
+
     const maxOrder = await this.tasksRepository.getMaxOrder(userId, date);
 
     return this.tasksRepository.moveToDate({ _id, userId }, date, maxOrder + 1);
@@ -56,5 +65,15 @@ export class TasksService implements OnModuleInit {
 
   async reorder(userId: number, tasks: ReorderTaskItemDto[]): Promise<void> {
     await this.tasksRepository.reorder(userId, tasks);
+  }
+
+  private async assertDayHasRoom(userId: number, date: string): Promise<void> {
+    const count = await this.tasksRepository.countByUserAndDate(userId, date);
+
+    if (count >= MAX_TASKS_PER_DAY) {
+      throw new BadRequestException(
+        `A day can hold up to ${MAX_TASKS_PER_DAY} tasks.`,
+      );
+    }
   }
 }

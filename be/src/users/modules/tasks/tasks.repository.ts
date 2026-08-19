@@ -37,6 +37,10 @@ export class TasksRepository {
     return tasks.map((task) => this.decryptTask(task));
   }
 
+  async countByUserAndDate(userId: number, date: string): Promise<number> {
+    return this.model.countDocuments({ userId, date });
+  }
+
   async getMaxOrder(userId: number, date: string): Promise<number> {
     const task = await this.model.findOne(
       { userId, date },

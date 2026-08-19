@@ -16,3 +16,12 @@
     color: #7A6E63;
     margin-top: 40px;
 }
+.todo-list-day-full {
+    margin: 0;
+    padding: 11px;
+    text-align: center;
+    font-size: 13px;
+    color: #7A6E63;
+    border: 1px dashed #ECE5DD;
+    border-radius: 10px;
+}
