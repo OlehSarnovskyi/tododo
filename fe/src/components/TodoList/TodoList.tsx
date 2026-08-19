@@ -15,6 +15,7 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-ki
 
 import CreateNew from "./components/CreateNew";
 import Task from "./components/Task/Task";
+import DayProgress from "./components/DayProgress";
 import { addNewTask, getTasksByUserIdAndDate, reorderTasks } from "../../services/tasks.service";
 import { useApiWithSnackbar } from "../../services/api.service";
 import { useLoading } from "../../services/loading.service";
@@ -68,6 +69,7 @@ function TodoList({ date, tasks, setTasksByUserIdAndDate }: Props) {
         addNew={addTask}
       />
       <hr />
+      <DayProgress tasks={tasks} />
       <div className="todo-list-tasks">
         {tasks.length > 0 ? (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

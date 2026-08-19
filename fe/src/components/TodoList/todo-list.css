@@ -1,8 +1,14 @@
+.day-progress {
+    /* Kept in sync with the list height calc below. */
+    height: 32px;
+    margin-bottom: 10px;
+}
+
 .todo-list-tasks .MuiList-root {
     background-color: transparent;
     overflow-y: auto;
-    /*minus all other elements*/
-    max-height: calc(100vh - 40px - 86px - 37px - 18px - 14px - 15px - 30px);
+    /*minus all other elements, incl. the 42px day-progress block*/
+    max-height: calc(100vh - 40px - 86px - 37px - 18px - 14px - 15px - 30px - 42px);
 }
 
 .todo-list-no-tasks {
