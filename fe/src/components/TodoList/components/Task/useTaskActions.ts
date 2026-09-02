@@ -3,12 +3,14 @@ import { AxiosInstance } from "axios";
 import { Dayjs } from "dayjs";
 
 import {
+  addNewTask,
   deleteTask,
   editTask,
   getTasksByUserIdAndDate,
   moveTask,
   setTaskStatus,
 } from "../../../../services/tasks.service";
+import { useSnackbar } from "../../../../services/snackbar.service";
 import { List } from "../../../../models/list";
 import { NEXT_STATUS, TaskStatus } from "../../../../models/status";
 import { DATE_FORMAT } from "../../../../constants";
@@ -31,6 +33,7 @@ interface Params {
  */
 export function useTaskActions({ api, task, date, setTasks }: Params) {
   const isSubmitting = useRef(false);
+  const showSnackbar = useSnackbar();
 
   const reload = useCallback(async () => {
     const tasks = await getTasksByUserIdAndDate(api)(date.format(DATE_FORMAT));
@@ -38,10 +41,10 @@ export function useTaskActions({ api, task, date, setTasks }: Params) {
   }, [api, date, setTasks]);
 
   const run = useCallback(
-    async (mutate: () => Promise<unknown>, optimistic: () => void): Promise<boolean> => {
+    async (mutate: () => Promise<unknown>, optimistic?: () => void): Promise<boolean> => {
       if (isSubmitting.current) return false;
       isSubmitting.current = true;
-      optimistic();
+      optimistic?.();
 
       try {
         await mutate();
@@ -69,6 +72,11 @@ export function useTaskActions({ api, task, date, setTasks }: Params) {
     [setTasks, task._id],
   );
 
+  const moveByDays = (days: number) => {
+    const target = date.add(days, "day").format(DATE_FORMAT);
+    return run(() => moveTask(api)(task._id, target), removeFromList);
+  };
+
   return {
     remove: () => run(() => deleteTask(api)(task._id), removeFromList),
 
@@ -80,9 +88,25 @@ export function useTaskActions({ api, task, date, setTasks }: Params) {
       return run(() => setTaskStatus(api)(task._id, next), () => patchInList({ status: next }));
     },
 
-    moveToTomorrow: () => {
+    // Moving takes the task off the current day, so the row goes immediately.
+    moveToTomorrow: () => moveByDays(1),
+
+    moveToYesterday: () => moveByDays(-1),
+
+    /**
+     * Copies the task onto tomorrow and leaves today's untouched. The current
+     * list does not change, so without a confirmation the tap would look like
+     * nothing happened.
+     */
+    copyToTomorrow: async () => {
       const tomorrow = date.add(1, "day").format(DATE_FORMAT);
-      return run(() => moveTask(api)(task._id, tomorrow), removeFromList);
+      const copied = await run(() => addNewTask(api)({ date: tomorrow, text: task.text }));
+
+      if (copied) {
+        showSnackbar("Copied to tomorrow", "success");
+      }
+
+      return copied;
     },
   };
 }

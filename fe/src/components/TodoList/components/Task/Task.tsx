@@ -19,6 +19,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import TimelapseIcon from "@mui/icons-material/Timelapse";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -30,11 +32,15 @@ import { List } from "../../../../models/list";
 import { TaskStatus } from "../../../../models/status";
 import { useTaskActions } from "./useTaskActions";
 
-type TaskOption = "edit" | "tomorrow" | "delete";
+type TaskOption = "edit" | "yesterday" | "tomorrow" | "copy" | "delete";
 
+// "Move" is spelled out on both directions so it reads as the opposite of
+// "Copy", which leaves the original in place.
 const OPTIONS: { title: string; value: TaskOption; icon: JSX.Element }[] = [
   { title: "Edit", value: "edit", icon: <EditIcon fontSize="small" /> },
-  { title: "Tomorrow", value: "tomorrow", icon: <ArrowForwardIcon fontSize="small" /> },
+  { title: "Move to yesterday", value: "yesterday", icon: <ArrowBackIcon fontSize="small" /> },
+  { title: "Move to tomorrow", value: "tomorrow", icon: <ArrowForwardIcon fontSize="small" /> },
+  { title: "Copy to tomorrow", value: "copy", icon: <ContentCopyIcon fontSize="small" /> },
   { title: "Delete", value: "delete", icon: <DeleteIcon fontSize="small" /> },
 ];
 
@@ -44,7 +50,7 @@ const STATUS_ICON: Record<TaskStatus, JSX.Element> = {
   [TaskStatus.DONE]: <CheckCircleIcon color="primary" />,
 };
 
-const MENU_MAX_HEIGHT = 48 * 4.5;
+const MENU_MAX_HEIGHT = 48 * 5.5;
 
 interface Props {
   task: List.Task;
@@ -72,7 +78,9 @@ function Task({ task, date, setTasksByUserIdAndDate }: Props) {
     setAnchorEl(null);
 
     if (option === "edit") setEditMode(true);
+    if (option === "yesterday") actions.moveToYesterday();
     if (option === "tomorrow") actions.moveToTomorrow();
+    if (option === "copy") actions.copyToTomorrow();
     if (option === "delete") actions.remove();
   }
 
@@ -183,7 +191,7 @@ function Task({ task, date, setTasksByUserIdAndDate }: Props) {
         onClose={() => setAnchorEl(null)}
         anchorOrigin={{ vertical: "top", horizontal: "left" }}
         transformOrigin={{ vertical: "top", horizontal: "left" }}
-        slotProps={{ paper: { style: { maxHeight: MENU_MAX_HEIGHT, minWidth: 168 } } }}
+        slotProps={{ paper: { style: { maxHeight: MENU_MAX_HEIGHT, minWidth: 208 } } }}
       >
         {OPTIONS.map((option) => (
           <MenuItem
