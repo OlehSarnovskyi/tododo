@@ -32,15 +32,17 @@ import { List } from "../../../../models/list";
 import { TaskStatus } from "../../../../models/status";
 import { useTaskActions } from "./useTaskActions";
 
-type TaskOption = "edit" | "yesterday" | "tomorrow" | "copy" | "delete";
+type TaskOption = "edit" | "previous" | "next" | "copy" | "delete";
 
-// "Move" is spelled out on both directions so it reads as the opposite of
-// "Copy", which leaves the original in place.
+// Labelled relative to the day on screen, not to today: "tomorrow" would be
+// wrong as soon as you open any other date in the calendar. "Move" is spelled
+// out on both directions so it reads as the opposite of "Copy", which leaves
+// the original where it is.
 const OPTIONS: { title: string; value: TaskOption; icon: JSX.Element }[] = [
   { title: "Edit", value: "edit", icon: <EditIcon fontSize="small" /> },
-  { title: "Move to yesterday", value: "yesterday", icon: <ArrowBackIcon fontSize="small" /> },
-  { title: "Move to tomorrow", value: "tomorrow", icon: <ArrowForwardIcon fontSize="small" /> },
-  { title: "Copy to tomorrow", value: "copy", icon: <ContentCopyIcon fontSize="small" /> },
+  { title: "Move to previous day", value: "previous", icon: <ArrowBackIcon fontSize="small" /> },
+  { title: "Move to next day", value: "next", icon: <ArrowForwardIcon fontSize="small" /> },
+  { title: "Copy to next day", value: "copy", icon: <ContentCopyIcon fontSize="small" /> },
   { title: "Delete", value: "delete", icon: <DeleteIcon fontSize="small" /> },
 ];
 
@@ -78,9 +80,9 @@ function Task({ task, date, setTasksByUserIdAndDate }: Props) {
     setAnchorEl(null);
 
     if (option === "edit") setEditMode(true);
-    if (option === "yesterday") actions.moveToYesterday();
-    if (option === "tomorrow") actions.moveToTomorrow();
-    if (option === "copy") actions.copyToTomorrow();
+    if (option === "previous") actions.moveToPreviousDay();
+    if (option === "next") actions.moveToNextDay();
+    if (option === "copy") actions.copyToNextDay();
     if (option === "delete") actions.remove();
   }
 
@@ -191,7 +193,7 @@ function Task({ task, date, setTasksByUserIdAndDate }: Props) {
         onClose={() => setAnchorEl(null)}
         anchorOrigin={{ vertical: "top", horizontal: "left" }}
         transformOrigin={{ vertical: "top", horizontal: "left" }}
-        slotProps={{ paper: { style: { maxHeight: MENU_MAX_HEIGHT, minWidth: 208 } } }}
+        slotProps={{ paper: { style: { maxHeight: MENU_MAX_HEIGHT, minWidth: 224 } } }}
       >
         {OPTIONS.map((option) => (
           <MenuItem

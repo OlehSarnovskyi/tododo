@@ -40,7 +40,8 @@ function HowToUse() {
             <ul>
                 <li>Use the arrows, or swipe left and right across the date.</li>
                 <li>Tap the date to jump to any day in the calendar.</li>
-                <li><b>Didn't get to it?</b> Choose <b>Tomorrow</b> in the <b>⋮</b> menu and the task moves to the next day.</li>
+                <li><b>Didn't get to it?</b> Choose <b>Move to next day</b> in the <b>⋮</b> menu. <b>Move to previous day</b> sends it back.</li>
+                <li><b>Needs doing again?</b> <b>Copy to next day</b> puts a fresh copy on the following day and leaves this one where it is.</li>
             </ul>
             <hr/>
 
