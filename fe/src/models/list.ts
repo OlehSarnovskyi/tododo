@@ -9,4 +9,12 @@ export namespace List {
         status: TaskStatus
         date: string
     }
+
+    /** Unfinished tasks outside today, as returned by GET /tasks/open. */
+    export interface OpenTasks {
+        skipped: Task[]
+        upcoming: Task[]
+        skippedTotal: number
+        upcomingTotal: number
+    }
 }

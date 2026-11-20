@@ -17,6 +17,8 @@ import { ReorderTasksDto } from './dto/reorder-tasks.dto';
 import { MoveTaskDto } from './dto/move-task.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { FindTasksDto } from './dto/find-tasks.dto';
+import { FindOpenTasksDto } from './dto/find-open-tasks.dto';
+import { OpenTasks } from './tasks.repository';
 import { CurrentUserId } from '../../../shared/telegram-user.decorator';
 
 /**
@@ -33,6 +35,14 @@ export class TasksController {
     @Query() query: FindTasksDto,
   ): Promise<TaskDocument[]> {
     return this.tasksService.findAllByUserIdAndDate(userId, query.date);
+  }
+
+  @Get('open')
+  async findOpen(
+    @CurrentUserId() userId: number,
+    @Query() query: FindOpenTasksDto,
+  ): Promise<OpenTasks> {
+    return this.tasksService.findOpen(userId, query.today);
   }
 
   @Post('add')

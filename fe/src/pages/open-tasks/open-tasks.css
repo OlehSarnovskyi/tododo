@@ -1,0 +1,107 @@
+.open-tasks {
+    width: 100%;
+    color: #3B332C;
+    padding-bottom: 32px;
+}
+
+.open-tasks h1 {
+    font-size: 24px;
+    margin: 16px 0 4px;
+}
+
+.open-tasks__lede {
+    margin: 0 0 24px;
+    font-size: 14px;
+    color: #7A6E63;
+}
+
+.open-tasks__section {
+    margin-bottom: 28px;
+}
+
+.open-tasks__heading {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ECE5DD;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #7A6E63;
+}
+
+.open-tasks__heading span {
+    color: #9C6B4F;
+    font-variant-numeric: tabular-nums;
+}
+
+.open-tasks__day {
+    margin-bottom: 14px;
+}
+
+/* Day labels and task texts are buttons (they open that day), styled as text. */
+.open-tasks__day-label,
+.open-tasks__text {
+    appearance: none;
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.open-tasks__day-label {
+    padding: 4px 0;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.open-tasks__day-label small {
+    font-size: 12.5px;
+    font-weight: 400;
+    color: #7A6E63;
+}
+
+.open-tasks__tasks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.open-tasks__task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+}
+
+.open-tasks__status {
+    display: flex;
+    flex: 0 0 auto;
+}
+
+.open-tasks__text {
+    flex: 1;
+    min-width: 0;
+    font-size: 15px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.open-tasks__day-label:focus-visible,
+.open-tasks__text:focus-visible {
+    outline: 2px solid #9C6B4F;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.open-tasks__note {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #7A6E63;
+}

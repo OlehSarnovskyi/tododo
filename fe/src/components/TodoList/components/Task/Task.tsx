@@ -21,9 +21,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import TimelapseIcon from "@mui/icons-material/Timelapse";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -31,6 +28,7 @@ import { useApiWithSnackbar } from "../../../../services/api.service";
 import { List } from "../../../../models/list";
 import { TaskStatus } from "../../../../models/status";
 import { useTaskActions } from "./useTaskActions";
+import TaskStatusIcon from "../../../TaskStatusIcon";
 
 type TaskOption = "edit" | "previous" | "next" | "copy" | "delete";
 
@@ -45,12 +43,6 @@ const OPTIONS: { title: string; value: TaskOption; icon: JSX.Element }[] = [
   { title: "Copy to next day", value: "copy", icon: <ContentCopyIcon fontSize="small" /> },
   { title: "Delete", value: "delete", icon: <DeleteIcon fontSize="small" /> },
 ];
-
-const STATUS_ICON: Record<TaskStatus, JSX.Element> = {
-  [TaskStatus.TODO]: <RadioButtonUncheckedIcon sx={{ color: "text.disabled" }} />,
-  [TaskStatus.IN_PROGRESS]: <TimelapseIcon color="primary" />,
-  [TaskStatus.DONE]: <CheckCircleIcon color="primary" />,
-};
 
 const MENU_MAX_HEIGHT = 48 * 5.5;
 
@@ -172,7 +164,7 @@ function Task({ task, date, setTasksByUserIdAndDate }: Props) {
               onClick={actions.cycleStatus}
               aria-label="change status"
             >
-              {STATUS_ICON[task.status] ?? STATUS_ICON[TaskStatus.TODO]}
+              <TaskStatusIcon status={task.status} />
             </IconButton>
           </ListItemIcon>
           <ListItemText

@@ -11,6 +11,12 @@ export function getTasksByUserIdAndDate(api: AxiosInstance): (date: string) => P
     };
 }
 
+export function getOpenTasks(api: AxiosInstance): (today: string) => Promise<List.OpenTasks> {
+    return (today) => {
+        return api.get('tasks/open', { params: { today } }).then(res => res.data);
+    };
+}
+
 export function addNewTask(api: AxiosInstance): (task: { date: string; text: string }) => Promise<void> {
     return (task) => {
         return api.post('tasks/add', task).then(res => res.data);

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
-import { TasksRepository } from './tasks.repository';
+import { OpenTasks, TasksRepository } from './tasks.repository';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskDocument } from './models/task.schema';
 import { ReorderTaskItemDto } from './dto/reorder-tasks.dto';
@@ -8,6 +8,9 @@ import { StatusEnum } from './models/status.enum';
 
 /** Keeps a day list short enough to stay useful, and caps abuse per day. */
 export const MAX_TASKS_PER_DAY = 20;
+
+/** Per section on the open tasks page; the totals still report the full count. */
+const OPEN_TASKS_LIMIT = 100;
 
 @Injectable()
 export class TasksService implements OnModuleInit {
@@ -27,6 +30,10 @@ export class TasksService implements OnModuleInit {
 
   async findAllByUserIdAndDate(userId: number, date: string): Promise<TaskDocument[]> {
     return this.tasksRepository.findAllByUserIdAndDate({ userId, date });
+  }
+
+  async findOpen(userId: number, today: string): Promise<OpenTasks> {
+    return this.tasksRepository.findOpenAround(userId, this.parseDay(today), OPEN_TASKS_LIMIT);
   }
 
   async create(userId: number, createTaskDto: CreateTaskDto): Promise<TaskDocument> {
@@ -65,6 +72,19 @@ export class TasksService implements OnModuleInit {
 
   async reorder(userId: number, tasks: ReorderTaskItemDto[]): Promise<void> {
     await this.tasksRepository.reorder(userId, tasks);
+  }
+
+  /** DD.MM.YYYY to UTC midnight, the same instant $dateFromString produces. */
+  private parseDay(value: string): Date {
+    const [day, month, year] = value.split('.').map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    // Date.UTC rolls 31.02 over into March; reject instead of guessing.
+    if (date.getUTCDate() !== day || date.getUTCMonth() !== month - 1) {
+      throw new BadRequestException(`${value} is not a valid date.`);
+    }
+
+    return date;
   }
 
   private async assertDayHasRoom(userId: number, date: string): Promise<void> {

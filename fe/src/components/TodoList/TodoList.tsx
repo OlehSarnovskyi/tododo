@@ -41,8 +41,14 @@ function TodoList({ date, tasks, setTasksByUserIdAndDate }: Props) {
 
   async function addTask(text: string): Promise<void> {
     const formattedDate = date.format(DATE_FORMAT);
-    await addNewTask(api)({ date: formattedDate, text });
-    setTasksByUserIdAndDate(await getTasksByUserIdAndDate(api)(formattedDate));
+
+    try {
+      await addNewTask(api)({ date: formattedDate, text });
+      setTasksByUserIdAndDate(await getTasksByUserIdAndDate(api)(formattedDate));
+    } catch {
+      // Reported by the API interceptor (a full day, for instance). CreateNew
+      // does not await this, so an escaping rejection would go unhandled.
+    }
   }
 
   function handleDragEnd({ active, over }: DragEndEvent): void {
@@ -83,7 +89,7 @@ function TodoList({ date, tasks, setTasksByUserIdAndDate }: Props) {
               items={tasks.map((task) => task._id)}
               strategy={verticalListSortingStrategy}
             >
-              <MuiList sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+              <MuiList sx={{ width: "100%", bgcolor: "background.paper" }}>
                 {tasks.map((task) => (
                   <Task
                     key={task._id}

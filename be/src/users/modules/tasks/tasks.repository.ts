@@ -8,6 +8,15 @@ import { CryptoService } from '../../../shared/crypto.service';
 
 const MIGRATION_BATCH_SIZE = 500;
 
+export interface OpenTasks {
+  /** Not done, on days before today — most recent first. */
+  skipped: TaskDocument[];
+  /** Not done, on days after today — soonest first. */
+  upcoming: TaskDocument[];
+  skippedTotal: number;
+  upcomingTotal: number;
+}
+
 /**
  * Persistence boundary for tasks.
  *
@@ -35,6 +44,52 @@ export class TasksRepository {
     });
 
     return tasks.map((task) => this.decryptTask(task));
+  }
+
+  /**
+   * Every unfinished task outside `today`, split into past and future.
+   *
+   * Dates are stored as DD.MM.YYYY strings, which do not sort chronologically
+   * ("02.12" < "25.11"), so they are parsed into real dates inside the
+   * pipeline. That keeps filtering, sorting and the limit in the database
+   * instead of loading the user's whole history into memory.
+   */
+  async findOpenAround(userId: number, today: Date, limit: number): Promise<OpenTasks> {
+    const before = { $match: { day: { $lt: today } } };
+    const after = { $match: { day: { $gt: today } } };
+    const dropDay = { $project: { day: 0 } };
+
+    const [result] = await this.model.aggregate([
+      { $match: { userId, status: { $ne: StatusEnum.DONE } } },
+      {
+        $addFields: {
+          day: {
+            $dateFromString: {
+              dateString: '$date',
+              format: '%d.%m.%Y',
+              onError: null,
+              onNull: null,
+            },
+          },
+        },
+      },
+      { $match: { day: { $ne: null } } },
+      {
+        $facet: {
+          skipped: [before, { $sort: { day: -1, order: 1 } }, { $limit: limit }, dropDay],
+          upcoming: [after, { $sort: { day: 1, order: 1 } }, { $limit: limit }, dropDay],
+          skippedTotal: [before, { $count: 'count' }],
+          upcomingTotal: [after, { $count: 'count' }],
+        },
+      },
+    ]);
+
+    return {
+      skipped: result.skipped.map((task: TaskDocument) => this.decryptTask(task)),
+      upcoming: result.upcoming.map((task: TaskDocument) => this.decryptTask(task)),
+      skippedTotal: result.skippedTotal[0]?.count ?? 0,
+      upcomingTotal: result.upcomingTotal[0]?.count ?? 0,
+    };
   }
 
   async countByUserAndDate(userId: number, date: string): Promise<number> {

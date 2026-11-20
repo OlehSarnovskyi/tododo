@@ -8,6 +8,7 @@ import {Alert, Snackbar} from "@mui/material";
 import {useApiWithSnackbar} from "./services/api.service";
 import LinearProgressBar from "./components/linear-progress-bar";
 import HowToUse from "./pages/how-to-use/how-to-use";
+import OpenTasks from "./pages/open-tasks/open-tasks";
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
             <div className="app__container">
                 <Routes>
                     <Route exact path="/" element={<Main/>}/>
+                    <Route path="/open-tasks" element={<OpenTasks/>}/>
                     <Route path="/how-to-use" element={<HowToUse/>}/>
                     <Route path="/additional-terms-of-service-and-privacy-policy" element={<Terms/>}/>
                 </Routes>

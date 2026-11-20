@@ -45,6 +45,14 @@ function HowToUse() {
             </ul>
             <hr/>
 
+            <h2>Catching up</h2>
+            <ul>
+                <li>Open the <b>clipboard</b> icon at the bottom to see every task that isn't done yet, outside today.</li>
+                <li><b>Skipped</b> lists what slipped through on earlier days; <b>Upcoming</b> lists what's already planned ahead.</li>
+                <li>Tap a task to open its day, or <b>Do today</b> to move it to today.</li>
+            </ul>
+            <hr/>
+
             <h2>Your privacy</h2>
             <ul>
                 <li>Task text is <b>encrypted before it is stored</b>, so it is unreadable in the database.</li>
